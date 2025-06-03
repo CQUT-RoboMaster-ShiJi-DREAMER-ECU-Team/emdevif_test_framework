@@ -24,6 +24,14 @@ typedef unsigned char rmdev_test_bool_t;
 void rmdev_test_framework_main(void);
 
 /**
+ * rmdev 测试框架 格式化输出函数
+ * @attention 这是接口函数，具体实现需要根据平台来编写，即需要在平台的相关文件中实现这个函数的定义。
+ * @param format 格式化字符串
+ * @param ... 可变参数列表
+ */
+void rmdev_test_printf(const char* format, ...);
+
+/**
  * rmdev 测试框架 检查布尔表达式是否正确（测试失败后会继续运行）
  * @attention 不建议直接调用这个函数，而是使用宏 RMDEV_TEST_CHECK，因为这个宏可以自动填写文件名与行号
  * @param name 测试名称

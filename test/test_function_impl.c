@@ -29,12 +29,12 @@ void rmdev_test_testItem(void)
     RMDEV_TEST_CHECK("true 2", true);
 }
 
-void rmdev_test_Delay(const unsigned int ms)
+void rmdev_test_delay(const unsigned int ms)
 {
     sleep(ms);
 }
 
-void rmdev_test_Printf(const char* format, ...)
+void rmdev_test_printf(const char* format, ...)
 {
     va_list args;
     va_start(args, format);
