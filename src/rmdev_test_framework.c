@@ -51,6 +51,10 @@ static void rmdev_test_item_finish(const char* name);
     do {               \
     } while (RMDEV_TEST_TRUE)
 
+/**
+ * 测试项结束
+ * @param name 结束的测试项的名称
+ */
 static void rmdev_test_item_finish(const char* name)
 {
     in_test_item = RMDEV_TEST_FALSE;

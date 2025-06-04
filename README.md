@@ -1,6 +1,7 @@
 # rmdev_test_framework
 
-一个纯 C 语言，适用于单片机开发的简易测试框架。也是 [rmdev](https://github.com/CQUT-RoboMaster-ShiJi-DREAMER-ECU-Team/rmdev)
+一个纯 C
+语言，适用于单片机开发的简易测试框架。也是 [rmdev](https://github.com/CQUT-RoboMaster-ShiJi-DREAMER-ECU-Team/rmdev)
 的一个子项目。
 
 ## 使用方法
@@ -26,8 +27,4 @@ CMake 3.5 或更高版本。
 ### 使用步骤
 
 1. 将 `rmdev_test_framework.h` 头文件包含到主函数所在的文件中。
-2. 在测试代码的主函数中调用 `rmdev_test_framework_main()` 函数。
-3. 实现相关接口函数（在合适的位置定义函数）：
-   1. `void rmdev_test_Printf(const char* format, ...)` - 用于格式化输出测试结果。
-   2. `void rmdev_test_Delay(const unsigned int ms)` - 用于延时。
-4. 定义测试项函数 `void rmdev_test_testItem(void)`，在这个函数内调用测试宏。
+2. 在测试代码的主函数中调用 `rmdev_test_framework_main()` 函数。相关参数可参考阅读函数的注释。
