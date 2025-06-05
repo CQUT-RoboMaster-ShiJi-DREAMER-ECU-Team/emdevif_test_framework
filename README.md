@@ -27,4 +27,4 @@ CMake 3.5 或更高版本。
 ### 使用步骤
 
 1. 将 `rmdev_test_framework.h` 头文件包含到主函数所在的文件中。
-2. 在测试代码的主函数中调用 `rmdev_test_framework_main()` 函数。相关参数可参考阅读函数的注释。
+2. 在测试代码的主函数中调用 `rmdev_test_framework_main()` 函数。相关参数可参考阅读函数的注释，或者参考本项目的测试代码示例。

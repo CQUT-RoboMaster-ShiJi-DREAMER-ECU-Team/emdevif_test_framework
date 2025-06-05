@@ -15,6 +15,7 @@ target_sources(${PROJECT_NAME}
         ${RMDEV_TEST_FRAMEWORK_PUBLIC_SOURCES}
 )
 
+# 将宏 RMDEV_TEST_FRAMEWORK_ENABLE_TEST 设置为 ON 即启用测试
 if (RMDEV_TEST_FRAMEWORK_ENABLE_TEST)
     add_subdirectory(test)
 endif ()

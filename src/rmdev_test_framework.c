@@ -154,7 +154,10 @@ void rmdev_test_assert(const char* file, const int line, const rmdev_test_bool_t
 static void rmdev_test_finish(void)
 {
     if (success_count + fail_count == test_item_total_count) {
-        printfCallback_("\r\nTest Finished.\r\n\r\n  %d Test(s) Succeeded, %d Test(s) Failed.\r\n",
+        printfCallback_("%sTest Finished.%s%s    %d Test(s) Succeeded, %d Test(s) Failed.\r\n",
+                        break_character,
+                        break_character,
+                        break_character,
                         success_count,
                         fail_count);
     }
