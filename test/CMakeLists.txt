@@ -1,23 +1,13 @@
-cmake_minimum_required(VERSION 3.28)
+if (DEFINED RMDEV_TEST_FRAMEWORK_TEST_PLATFORM)
+    if (RMDEV_TEST_FRAMEWORK_TEST_PLATFORM MATCHES "windows")
+        add_subdirectory(windows)
+    elseif (RMDEV_TEST_FRAMEWORK_TEST_PLATFORM MATCHES "stm32f407ighx")
+        add_subdirectory(stm32f407ighx)
+    else ()
+        message(WARNING "Unsupported platform for test of rmdev_test_framework: ${RMDEV_TEST_FRAMEWORK_TEST_PLATFORM}. Skipping.")
 
-project(test C)
-
-set(CMAKE_C_STANDARD 11)
-
-add_executable(${PROJECT_NAME})
-
-target_link_libraries(${PROJECT_NAME}
-    PRIVATE
-        rmdev_test_framework
-)
-
-target_include_directories(${PROJECT_NAME}
-    PRIVATE
-        ./
-)
-
-target_sources(${PROJECT_NAME}
-    PRIVATE
-        main.c
-        test_function_impl.c
-)
+        unset(RMDEV_TEST_FRAMEWORK_TEST_PLATFORM)
+    endif ()
+else ()
+    message(WARNING "RMDEV_TEST_FRAMEWORK_TEST_PLATFORM is not defined, so test of rmdev_test_framework skipped. Please set it to a valid platform (e.g., windows or STM32F407).")
+endif ()
