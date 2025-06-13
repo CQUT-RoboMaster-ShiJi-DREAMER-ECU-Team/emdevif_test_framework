@@ -7,6 +7,10 @@
 
 #include "rmdev_test_framework.h"
 
+#ifndef RMDEV_TEST_DO_NOT_PRINT_PASSED_TEST
+#define RMDEV_TEST_DO_NOT_PRINT_PASSED_TEST RMDEV_TEST_FALSE
+#endif
+
 enum {
     RMDEV_TEST_NO_ERROR = 0,           ///< 无错误
     RMDEV_TEST_NO_BREAK_CHARACTER,     ///< 没有设置换行符
@@ -112,7 +116,10 @@ void rmdev_test_check(const char* file, const int line, const rmdev_test_bool_t 
     ++test_item_index;
 
     if (result) {
+#if (!RMDEV_TEST_DO_NOT_PRINT_PASSED_TEST)
         printfCallback_("No.%d passed.%s", test_item_index, break_character);
+#endif
+
         ++success_count;
         ++test_item_success_count;
     }
@@ -134,7 +141,10 @@ void rmdev_test_assert(const char* file, const int line, const rmdev_test_bool_t
     ++test_item_index;
 
     if (result) {
+#if (!RMDEV_TEST_DO_NOT_PRINT_PASSED_TEST)
         printfCallback_("No.%d passed.%s", test_item_index, break_character);
+#endif
+
         ++success_count;
         ++test_item_success_count;
     }
@@ -207,6 +217,8 @@ void rmdev_test_framework_main(const char* break_char,
     }
 
     testItemCallback_();
+
+    rmdev_test_item_finish(current_test_item_name);
 
     rmdev_test_finish();
 }

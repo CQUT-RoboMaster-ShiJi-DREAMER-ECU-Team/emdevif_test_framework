@@ -14,8 +14,8 @@ extern "C" {
 #endif
 
 typedef unsigned char rmdev_test_bool_t;
-#define RMDEV_TEST_TRUE  1U
-#define RMDEV_TEST_FALSE 0U
+#define RMDEV_TEST_TRUE  (1U)
+#define RMDEV_TEST_FALSE (0U)
 
 #define RMDEV_TEST_NULL  ((void*)0)
 
@@ -63,7 +63,7 @@ void rmdev_test_item(const char* name, const char* file, int line);
  * rmdev 测试框架 定义一个测试项
  * @param name 测试项名称
  */
-#define RMDEV_TEST_ITEM(name) rmdev_test_item(name, __FILE__, __LINE__)
+#define RMDEV_TEST_ITEM(name) rmdev_test_item((name), __FILE__, __LINE__)
 
 /**
  * rmdev 测试框架 检查布尔表达式是否正确（测试失败后会继续运行）
@@ -78,7 +78,7 @@ void rmdev_test_check(const char* file, int line, rmdev_test_bool_t result);
  * rmdev 测试框架 检查布尔表达式是否正确（测试失败后会继续运行）
  * @param result 待检查的布尔表达式
  */
-#define RMDEV_TEST_CHECK(result) rmdev_test_check(__FILE__, __LINE__, result)
+#define RMDEV_TEST_CHECK(result) rmdev_test_check(__FILE__, __LINE__, (result))
 
 /**
  * rmdev 测试框架 断言布尔表达式是否正确（测试失败后会停止测试）
@@ -93,7 +93,7 @@ void rmdev_test_assert(const char* file, int line, rmdev_test_bool_t result);
  * rmdev 测试框架 断言布尔表达式是否正确（测试失败后会停止测试）
  * @param result 待检查的布尔表达式
  */
-#define RMDEV_TEST_ASSERT(result) rmdev_test_assert(__FILE__, __LINE__, result)
+#define RMDEV_TEST_ASSERT(result) rmdev_test_assert(__FILE__, __LINE__, (result))
 
 #ifdef __cplusplus
 }
