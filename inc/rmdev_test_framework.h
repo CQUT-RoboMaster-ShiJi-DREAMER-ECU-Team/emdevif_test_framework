@@ -43,7 +43,7 @@ typedef void (*rmdev_test_testItemCallback)(void);
  * @param break_char 换行符
  * @param printfCallback 用于格式化输出的回调函数
  * @param delayCallback 用于延时的回调函数
- * @param testItemCallback 运行测试项的回调函数（你执行的测试在这个函数里执行）
+ * @param testItemCallback 运行测试项的回调函数（您执行的测试在这个函数里执行）
  */
 void rmdev_test_framework_main(const char* break_char,
                                rmdev_test_printfCallback printfCallback,
