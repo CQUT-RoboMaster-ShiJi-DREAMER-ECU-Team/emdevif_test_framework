@@ -19,5 +19,6 @@ target_include_directories(${PROJECT_NAME}
 target_sources(${PROJECT_NAME}
     PRIVATE
         main.c
+        external_test.c
         test_function_impl.c
 )

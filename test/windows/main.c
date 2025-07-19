@@ -7,63 +7,67 @@
 
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-#include "rmdev_test_framework.h"
+#include "rmdev_test_framework-no_prefix.h"
+
 #include "test_function_impl.h"
+#include "external_test.h"
+
+TEST_SUIT(SuccessTest)
+{
+    TEST_CASE_BEGIN(a)
+    {
+        EXPECT_TRUE(1 == 1);
+        EXPECT_FALSE(114514 == 1919810);
+        EXPECT_FALSE(67978 == 0);
+    }
+    TEST_CASE_END();
+}
+
+TEST_SUIT(TrueFalseTest)
+{
+    TEST_CASE_BEGIN(ExpectSuccess)
+    {
+        EXPECT_TRUE(true);
+        EXPECT_FALSE(false);
+    }
+    TEST_CASE_END();
+
+    TEST_CASE_BEGIN(ExpectFail)
+    {
+        EXPECT_TRUE(1 == 3);
+        EXPECT_FALSE(114514 == 114514);
+    }
+    TEST_CASE_END();
+}
 
 void testApiUsage(void)
 {
-    RMDEV_TEST_ITEM("Constant Test");
-    RMDEV_TEST_CHECK(true);
-    RMDEV_TEST_CHECK(false);
+    RUN_SUIT(SuccessTest);
+    RUN_SUIT(TrueFalseTest);
+    RUN_SUIT(ExternalTest);
 
-    RMDEV_TEST_ITEM("Calculate Test");
-    RMDEV_TEST_CHECK((1 + 1) == 2);
-    RMDEV_TEST_CHECK((2 * 2) == 4);
-    RMDEV_TEST_CHECK((3 - 1) == 2);
-
-    RMDEV_TEST_CHECK((10 / 2) == 5);
-    RMDEV_TEST_CHECK((5 % 2) == 1);
-    RMDEV_TEST_CHECK((7 * 3) == 21);
-    RMDEV_TEST_CHECK((8 - 3) == 5);
-    RMDEV_TEST_CHECK((4 + 6) == 10);
-
-    RMDEV_TEST_CHECK((10 / 3) == 4);  // false
-
-    RMDEV_TEST_ASSERT((15 / 3) == 5);
-    RMDEV_TEST_ASSERT((9 % 3) == 0);
-    RMDEV_TEST_ASSERT((6 * 6) == 36);
-
-    RMDEV_TEST_CHECK((2 * 2) == 5);  // false
-
-    RMDEV_TEST_ASSERT((20 - 10) == 10);
-    RMDEV_TEST_ASSERT((3 + 7) == 10);
-
-    RMDEV_TEST_CHECK((1 + 1) == 3);  // false
-
-    RMDEV_TEST_CHECK((114514 + 1919810) == 2034324);
-    RMDEV_TEST_ASSERT(-1 - 2 == -3);
-
-    RMDEV_TEST_ITEM("None Test");
-
-    RMDEV_TEST_ITEM("Assert Test");
-    RMDEV_TEST_ASSERT(true);
-    RMDEV_TEST_ASSERT(false);
-
-    RMDEV_TEST_CHECK(true);
+    FixtureTest_Constructor(&fixture_test);
+    RUN_SUIT_F(FixtureTest, &fixture_test);
+    if (fixture_test.a != -9631014) {
+        printf("FixtureTest failed: a = %d\n", fixture_test.a);
+    }
 }
 
-int main(void)
+int main(const int argc, char* argv[])
 {
-    printf("1 -- Api Usage Test\n");
-    printf("2 -- NULL Break Character Test\n");
-    printf("3 -- NULL Printf Callback Test\n");
-    printf("4 -- NULL Delay Callback Test\n");
-    printf("5 -- NULL Test Item Callback Test\n");
-    printf("Choose which to test: ");
+    int choice = 1;
 
-    int choice;
-    scanf("%d", &choice);
+    if (argc == 2) {
+        char* end_ptr;
+        choice = strtol(argv[1], &end_ptr, 10);
+
+        if (*end_ptr != '\0' || choice < 1 || choice > 5) {
+            fprintf(stderr, "Invalid argument! Please provide a number between 1 and 5.\n");
+            return 1;
+        }
+    }
 
     switch (choice) {
     case 1:
@@ -82,7 +86,7 @@ int main(void)
         rmdev_test_framework_main("\n", my_printf, my_delay, NULL);
         break;
     default:
-        printf("Invalid choice!\n");
+        fprintf(stderr, "Invalid choice!\n");
         return 1;
     }
 

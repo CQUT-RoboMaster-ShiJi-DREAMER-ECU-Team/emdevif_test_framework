@@ -49,34 +49,34 @@ static void testDelay(const unsigned int ms)
 static void testItem(void)
 {
     RMDEV_TEST_ITEM("Constant Test");
-    RMDEV_TEST_CHECK(true);
-    RMDEV_TEST_CHECK(false);
+    RMDEV_TEST_EXPECT(true);
+    RMDEV_TEST_EXPECT(false);
 
     RMDEV_TEST_ITEM("Calculate Test");
-    RMDEV_TEST_CHECK((1 + 1) == 2);
-    RMDEV_TEST_CHECK((2 * 2) == 4);
-    RMDEV_TEST_CHECK((3 - 1) == 2);
+    RMDEV_TEST_EXPECT((1 + 1) == 2);
+    RMDEV_TEST_EXPECT((2 * 2) == 4);
+    RMDEV_TEST_EXPECT((3 - 1) == 2);
 
-    RMDEV_TEST_CHECK((10 / 2) == 5);
-    RMDEV_TEST_CHECK((5 % 2) == 1);
-    RMDEV_TEST_CHECK((7 * 3) == 21);
-    RMDEV_TEST_CHECK((8 - 3) == 5);
-    RMDEV_TEST_CHECK((4 + 6) == 10);
+    RMDEV_TEST_EXPECT((10 / 2) == 5);
+    RMDEV_TEST_EXPECT((5 % 2) == 1);
+    RMDEV_TEST_EXPECT((7 * 3) == 21);
+    RMDEV_TEST_EXPECT((8 - 3) == 5);
+    RMDEV_TEST_EXPECT((4 + 6) == 10);
 
-    RMDEV_TEST_CHECK((10 / 3) == 4);  // false
+    RMDEV_TEST_EXPECT((10 / 3) == 4);  // false
 
     RMDEV_TEST_ASSERT((15 / 3) == 5);
     RMDEV_TEST_ASSERT((9 % 3) == 0);
     RMDEV_TEST_ASSERT((6 * 6) == 36);
 
-    RMDEV_TEST_CHECK((2 * 2) == 5);  // false
+    RMDEV_TEST_EXPECT((2 * 2) == 5);  // false
 
     RMDEV_TEST_ASSERT((20 - 10) == 10);
     RMDEV_TEST_ASSERT((3 + 7) == 10);
 
-    RMDEV_TEST_CHECK((1 + 1) == 3);  // false
+    RMDEV_TEST_EXPECT((1 + 1) == 3);  // false
 
-    RMDEV_TEST_CHECK((114514 + 1919810) == 2034324);
+    RMDEV_TEST_EXPECT((114514 + 1919810) == 2034324);
     RMDEV_TEST_ASSERT(-1 - 2 == -3);
 
     RMDEV_TEST_ITEM("None Test");
@@ -85,7 +85,7 @@ static void testItem(void)
     RMDEV_TEST_ASSERT(true);
     RMDEV_TEST_ASSERT(false);
 
-    RMDEV_TEST_CHECK(true);
+    RMDEV_TEST_EXPECT(true);
 }
 
 /**

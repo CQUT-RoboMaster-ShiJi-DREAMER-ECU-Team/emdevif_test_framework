@@ -33,67 +33,150 @@ typedef void (*rmdev_test_printfCallback)(const char* format, ...);
 typedef void (*rmdev_test_delayCallback)(unsigned int ms);
 
 /**
- * rmdev 测试框架 测试项回调函数类型
+ * rmdev 测试框架 测试入口回调函数类型
  */
-typedef void (*rmdev_test_testItemCallback)(void);
+typedef void (*rmdev_test_testEntryCallback)(void);
+
+/**
+ * 测试夹具
+ */
+typedef struct rmdev_test_TestFixture {
+    void (*setUp)(struct rmdev_test_TestFixture* this_);
+    void (*tearDown)(struct rmdev_test_TestFixture* this_);
+} rmdev_test_TestFixture;
+
+/**
+ * 测试套件
+ */
+typedef struct rmdev_test_TestSuit {
+    const char* name;                           ///< 名称
+
+    rmdev_test_TestFixture* fixture;            ///< 测试夹具
+
+    int total_count;                            ///< 测试计数
+    int success_count;                          ///< 成功计数
+    int fail_count;                             ///< 失败计数
+
+    void (*body)(struct rmdev_test_TestSuit*);  ///< 测试内容
+} rmdev_test_TestSuit;
+
+enum rmdev_test_CompareType {
+    RMDEV_TEST_COMPARE_EQUAL = 0,      ///< @c EQ 等于
+    RMDEV_TEST_COMPARE_NOT_EQUAL,      ///< @c NE 不等于
+    RMDEV_TEST_COMPARE_GREATER_THAN,   ///< @c GT 大于
+    RMDEV_TEST_COMPARE_LESS_THAN,      ///< @c LT 小于
+    RMDEV_TEST_COMPARE_GREATER_EQUAL,  ///< @c GE 大于等于
+    RMDEV_TEST_COMPARE_LESS_EQUAL      ///< @c LE 小于等于
+};
+
+enum rmdev_test_CheckType_ {
+    RMDEV_TEST_CHECK_TYPE_EXPECT = 0,        ///< @c EXPECT 期望
+    RMDEV_TEST_CHECK_TYPE_ASSERT             ///< @c ASSERT 断言
+};
+typedef unsigned char rmdev_test_CheckType;  ///< 检查类型
+
+typedef struct rmdev_test_CompareMsg {
+    const char* file;               ///< 调用函数所在的文件名
+    int line;                       ///< 调用函数所在的行号
+
+    const char* compare_type_msg;   ///< 比较方式的信息
+
+    const char* current_case_name;  ///< 当前测试的名称
+
+    const char* lhs_name;           ///< 左侧参数的名称
+    const char* lhs_value;          ///< 左侧参数的值（字符串形式）
+    const char* rhs_name;           ///< 右侧参数的名称
+    const char* rhs_value;          ///< 右侧参数的值（字符串形式）
+} rmdev_test_CompareMsg;
+
+extern void rmdev_test_TestFixture_Constructor(void* this_,
+                                               void (*setUp)(rmdev_test_TestFixture* this_),
+                                               void (*tearDown)(rmdev_test_TestFixture* this_));
+extern void rmdev_test_run_test(rmdev_test_TestSuit* test_suit);
+
+#define RMDEV_TEST_TEST_SUIT(test_suit) void rmdev_test__##test_suit##__(rmdev_test_TestSuit* rmdev___suit)
+
+#define RMDEV_TEST_TEST_CASE_BEGIN(case_name)                        \
+    do {                                                             \
+        const char* rmdev___case_name = #case_name;                  \
+                                                                     \
+        if (rmdev___suit->fixture != RMDEV_TEST_NULL) {              \
+            if (rmdev___suit->fixture->setUp != RMDEV_TEST_NULL) {   \
+                rmdev___suit->fixture->setUp(rmdev___suit->fixture); \
+            }                                                        \
+        }
+
+#define RMDEV_TEST_TEST_CASE_END(void)                              \
+    if (rmdev___suit->fixture != RMDEV_TEST_NULL) {                 \
+        if (rmdev___suit->fixture->tearDown != RMDEV_TEST_NULL) {   \
+            rmdev___suit->fixture->tearDown(rmdev___suit->fixture); \
+        }                                                           \
+    }                                                               \
+    }                                                               \
+    while (0)
+
+#define RMDEV_TEST_RUN_SUIT(test_suit)                                                \
+    do {                                                                              \
+        rmdev_test_TestSuit rmdev___test_suit = {.name = #test_suit,                  \
+                                                 .body = rmdev_test__##test_suit##__, \
+                                                 .fixture = RMDEV_TEST_NULL,          \
+                                                 .total_count = 0,                    \
+                                                 .success_count = 0,                  \
+                                                 .fail_count = 0};                    \
+        rmdev_test_run_test(&rmdev___test_suit);                                      \
+    } while (0)
+
+#define RMDEV_TEST_RUN_SUIT_F(test_suit, test_fixture_instance)                                        \
+    do {                                                                                               \
+        rmdev_test_TestFixture* rmdev_test___fixture = (rmdev_test_TestFixture*)test_fixture_instance; \
+        rmdev_test_TestSuit rmdev___test_suit = {.name = #test_suit,                                   \
+                                                 .body = rmdev_test__##test_suit##__,                  \
+                                                 .fixture = rmdev_test___fixture,                      \
+                                                 .total_count = 0,                                     \
+                                                 .success_count = 0,                                   \
+                                                 .fail_count = 0};                                     \
+        rmdev_test_run_test(&rmdev___test_suit);                                                       \
+    } while (0)
+
+void rmdev_test_expectTure(rmdev_test_TestSuit* test_suit,
+                           rmdev_test_CompareMsg* msg,
+                           rmdev_test_CheckType check_type,
+                           rmdev_test_bool_t result);
+void rmdev_test_expectFalse(rmdev_test_TestSuit* test_suit,
+                            rmdev_test_CompareMsg* msg,
+                            rmdev_test_CheckType check_type,
+                            rmdev_test_bool_t result);
+
+#define RMDEV_TEST_EXPECT_TRUE(result)                                                           \
+    do {                                                                                         \
+        rmdev_test_CompareMsg rmdev___msg = {.file = __FILE__,                                   \
+                                             .line = __LINE__,                                   \
+                                             .current_case_name = rmdev___case_name,             \
+                                             .rhs_name = #result};                               \
+        rmdev_test_expectTure(rmdev___suit, &rmdev___msg, RMDEV_TEST_CHECK_TYPE_EXPECT, result); \
+    } while (0)
+
+#define RMDEV_TEST_EXPECT_FALSE(result)                                                           \
+    do {                                                                                          \
+        rmdev_test_CompareMsg rmdev___msg = {.file = __FILE__,                                    \
+                                             .line = __LINE__,                                    \
+                                             .current_case_name = rmdev___case_name,              \
+                                             .rhs_name = #result};                                \
+        rmdev_test_expectFalse(rmdev___suit, &rmdev___msg, RMDEV_TEST_CHECK_TYPE_EXPECT, result); \
+    } while (0)
 
 /**
  * rmdev 测试框架 主函数
  * @attention 需要将其放在真正的 main 函数中调用
- * @param break_char 换行符
+ * @param line_break 换行符
  * @param printfCallback 用于格式化输出的回调函数
  * @param delayCallback 用于延时的回调函数
- * @param testItemCallback 运行测试项的回调函数（你执行的测试在这个函数里执行）
+ * @param testEntryCallback 运行测试的入口回调函数
  */
-void rmdev_test_framework_main(const char* break_char,
+void rmdev_test_framework_main(const char* line_break,
                                rmdev_test_printfCallback printfCallback,
                                rmdev_test_delayCallback delayCallback,
-                               rmdev_test_testItemCallback testItemCallback);
-
-/**
- * rmdev 测试框架 定义一个测试项
- * @attention 不建议直接调用这个函数，而是使用宏 RMDEV_TEST_ITEM，因为这个宏可以自动填写文件名与行号
- * @param name 测试项名称
- * @param file 调用函数所在的文件名
- * @param line 调用函数所在的行号
- */
-void rmdev_test_item(const char* name, const char* file, int line);
-
-/**
- * rmdev 测试框架 定义一个测试项
- * @param name 测试项名称
- */
-#define RMDEV_TEST_ITEM(name) rmdev_test_item((name), __FILE__, __LINE__)
-
-/**
- * rmdev 测试框架 检查布尔表达式是否正确（测试失败后会继续运行）
- * @attention 不建议直接调用这个函数，而是使用宏 RMDEV_TEST_CHECK，因为这个宏可以自动填写文件名与行号
- * @param file 调用函数所在的文件名
- * @param line 调用函数所在的行号
- * @param result 待检查的布尔表达式
- */
-void rmdev_test_check(const char* file, int line, rmdev_test_bool_t result);
-
-/**
- * rmdev 测试框架 检查布尔表达式是否正确（测试失败后会继续运行）
- * @param result 待检查的布尔表达式
- */
-#define RMDEV_TEST_CHECK(result) rmdev_test_check(__FILE__, __LINE__, (result))
-
-/**
- * rmdev 测试框架 断言布尔表达式是否正确（测试失败后会停止测试）
- * @attention 不建议直接调用这个函数，而是使用宏 RMDEV_TEST_ASSERT，因为这个宏可以自动填写文件名与行号
- * @param file 调用函数所在的文件名
- * @param line 调用函数所在的行号
- * @param result 待检查的布尔表达式
- */
-void rmdev_test_assert(const char* file, int line, rmdev_test_bool_t result);
-
-/**
- * rmdev 测试框架 断言布尔表达式是否正确（测试失败后会停止测试）
- * @param result 待检查的布尔表达式
- */
-#define RMDEV_TEST_ASSERT(result) rmdev_test_assert(__FILE__, __LINE__, (result))
+                               rmdev_test_testEntryCallback testEntryCallback);
 
 #ifdef __cplusplus
 }
