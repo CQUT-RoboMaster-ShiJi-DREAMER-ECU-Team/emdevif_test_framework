@@ -7,6 +7,8 @@
 
 #include "rmdev_test_framework.h"
 
+#include <string.h>
+
 unsigned char rmdev_test_error_code = RMDEV_TEST_NO_ERROR;           ///< 测试框架错误码
 
 const char* rmdev_test___line_break_character___ = RMDEV_TEST_NULL;  ///< 换行符
@@ -22,6 +24,8 @@ static const rmdev_test_TestSuit* current_running_suit = RMDEV_TEST_NULL;
 static int test_suit_total_count = 0;    ///< 测试套件计数
 static int test_suit_success_count = 0;  ///< 成功计数
 static int test_suit_fail_count = 0;     ///< 失败计数
+
+static rmdev_test_Hooks hooks;           ///< 钩子函数
 
 static void rmdev_test_finish(void);
 static void rmdev_test_check(const rmdev_test_CompareMsg* msg,
@@ -150,7 +154,7 @@ void rmdev_test_assertFailEntry(void)
  * @attention 此函数由框架内部调用
  * @param test_suit 测试套件
  */
-void rmdev_test_run_test(rmdev_test_TestSuit* test_suit)
+void rmdev_test_run_test_suit(rmdev_test_TestSuit* test_suit)
 {
     current_running_suit = test_suit;
     ++test_suit_total_count;
@@ -219,7 +223,9 @@ static void rmdev_test_finish(void)
     }
 }
 
-void rmdev_test_framework_main(const char* line_break, const rmdev_test_Callbacks* const callback)
+void rmdev_test_framework_main(const char* line_break,
+                               const rmdev_test_Callbacks* const callback,
+                               const rmdev_test_Hooks* const user_hooks)
 {
     rmdev_test_deinit();
 
@@ -253,6 +259,13 @@ void rmdev_test_framework_main(const char* line_break, const rmdev_test_Callback
     }
     if (errorCallback_ == RMDEV_TEST_NULL) {
         errorCallback_ = rmdev_test_defaultErrorCallback;
+    }
+
+    if (user_hooks == RMDEV_TEST_NULL) {
+        memset(&hooks, 0, sizeof(rmdev_test_Hooks));
+    }
+    else {
+        hooks = *user_hooks;
     }
 
     testEntryCallback_();

@@ -162,6 +162,48 @@ typedef struct rmdev_test_CompareMsg {
     rmdev_test_printfCallback message;  ///< 输出信息的格式化输出回调函数
 } rmdev_test_CompareMsg;
 
+/**
+ * 测试运行的钩子函数
+ */
+typedef struct rmdev_test_Hooks {
+    /**
+     * 测试开始钩子
+     */
+    void (*testBeginHook)(void);
+
+    /**
+     * 测试结束钩子
+     * @param suit_total 测试套件总数
+     * @param suit_passed 测试套件通过数
+     * @param suit_failed 测试套件失败数
+     */
+    void (*testEndHook)(int suit_total, int suit_passed, int suit_failed);
+
+    /**
+     * 测试套件开始钩子
+     * @param test_suit 当前的测试套件
+     */
+    void (*testSuitBeginHook)(rmdev_test_TestSuit* test_suit);
+
+    /**
+     * 测试套件结束钩子
+     * @param test_suit 当前的测试套件
+     */
+    void (*testSuitEndHook)(rmdev_test_TestSuit* test_suit);
+
+    /**
+     * 测试用例开始钩子
+     * @param compare_msg 比较信息
+     */
+    void (*testCaseBeginHook)(rmdev_test_CompareMsg* compare_msg);
+
+    /**
+     * 测试用例结束钩子
+     * @param compare_msg 比较信息
+     */
+    void (*testCaseEndHook)(rmdev_test_CompareMsg* compare_msg);
+} rmdev_test_Hooks;
+
 extern rmdev_test_printfCallback rmdev_test___printfCallback___;
 extern const char* rmdev_test___line_break_character___;
 
@@ -174,7 +216,7 @@ extern const char* rmdev_test___line_break_character___;
 void rmdev_test_TestFixture_Constructor(void* this_,
                                         void (*setUp)(rmdev_test_TestFixture* this_),
                                         void (*tearDown)(rmdev_test_TestFixture* this_));
-void rmdev_test_run_test(rmdev_test_TestSuit* test_suit);
+void rmdev_test_run_test_suit(rmdev_test_TestSuit* test_suit);
 
 #define RMDEV_TEST_TEST_SUIT(test_suit) void rmdev_test__##test_suit##__(rmdev_test_TestSuit* rmdev___suit)
 
@@ -206,7 +248,7 @@ void rmdev_test_run_test(rmdev_test_TestSuit* test_suit);
                                                  .total_count = 0,                    \
                                                  .success_count = 0,                  \
                                                  .fail_count = 0};                    \
-        rmdev_test_run_test(&rmdev___test_suit);                                      \
+        rmdev_test_run_test_suit(&rmdev___test_suit);                                 \
     } while (0)
 
 #define RMDEV_TEST_RUN_SUIT_F(test_suit, test_fixture_instance)                                        \
@@ -218,7 +260,7 @@ void rmdev_test_run_test(rmdev_test_TestSuit* test_suit);
                                                  .total_count = 0,                                     \
                                                  .success_count = 0,                                   \
                                                  .fail_count = 0};                                     \
-        rmdev_test_run_test(&rmdev___test_suit);                                                       \
+        rmdev_test_run_test_suit(&rmdev___test_suit);                                                  \
     } while (0)
 
 const rmdev_test_CompareMsg* rmdev_test_checkTure(rmdev_test_CompareMsg* msg,
@@ -285,8 +327,11 @@ void rmdev_test_assertFailEntry(void);
  * @attention 需要将其放在真正的 main 函数中调用
  * @param line_break 换行符
  * @param callback 回调函数
+ * @param user_hooks 钩子函数。如果不需要，传入 @c NULL 即可
  */
-void rmdev_test_framework_main(const char* line_break, const rmdev_test_Callbacks* callback);
+void rmdev_test_framework_main(const char* line_break,
+                               const rmdev_test_Callbacks* callback,
+                               const rmdev_test_Hooks* user_hooks);
 
 #ifdef __cplusplus
 }

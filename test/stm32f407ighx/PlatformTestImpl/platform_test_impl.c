@@ -94,5 +94,5 @@ static void testItem(void)
  */
 void stm32f407ighx_test_main(void)
 {
-    rmdev_test_framework_main("\n", TODO);
+    rmdev_test_framework_main("\n", TODO, NULL);
 }

@@ -90,19 +90,19 @@ int main(const int argc, char* argv[])
 
     switch (choice) {
     case 1:
-        rmdev_test_framework_main("\n", &cb);
+        rmdev_test_framework_main("\n", &cb, NULL);
         break;
     case 2:
-        rmdev_test_framework_main(NULL, &cb);
+        rmdev_test_framework_main(NULL, &cb, NULL);
         break;
     case 3:
-        rmdev_test_framework_main("\n", &cb);
+        rmdev_test_framework_main("\n", &cb, NULL);
         break;
     case 4:
-        rmdev_test_framework_main("\n", &cb);
+        rmdev_test_framework_main("\n", &cb, NULL);
         break;
     case 5:
-        rmdev_test_framework_main("\n", &cb);
+        rmdev_test_framework_main("\n", &cb, NULL);
         break;
     default:
         fprintf(stderr, "Invalid choice!\n");
