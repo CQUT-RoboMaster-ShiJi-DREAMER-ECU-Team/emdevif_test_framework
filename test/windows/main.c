@@ -18,7 +18,7 @@ TEST_SUIT(SuccessTest)
 {
     TEST_CASE_BEGIN(a)
     {
-        EXPECT_TRUE(1 == 1);
+        EXPECT_TRUE(1 == 1)->RMDEV_TEST_MESSAGE("1 should be equal to 1!");
         EXPECT_FALSE(114514 == 1919810);
         EXPECT_FALSE(67978 == 0);
     }
@@ -36,8 +36,8 @@ TEST_SUIT(TrueFalseTest)
 
     TEST_CASE_BEGIN(ExpectFail)
     {
-        EXPECT_TRUE(1 == 3);
-        EXPECT_FALSE(114514 == 114514);
+        EXPECT_TRUE(1 == 3)->MESSAGE("1 should not be equal to %d!", 3);
+        EXPECT_FALSE(114514 == 114514)->MESSAGE("114514 should not be equal to 114514!");
     }
     TEST_CASE_END();
 }

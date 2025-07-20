@@ -17,11 +17,11 @@ enum {
     RMDEV_TEST_OTHER_ERROR             ///< 其他错误
 };
 
-unsigned char rmdev_test_error_code = RMDEV_TEST_NO_ERROR;  ///< 测试框架错误码
+unsigned char rmdev_test_error_code = RMDEV_TEST_NO_ERROR;           ///< 测试框架错误码
 
-static const char* line_break_character;                    ///< 换行符
+const char* rmdev_test___line_break_character___ = RMDEV_TEST_NULL;  ///< 换行符
 
-static rmdev_test_printfCallback printfCallback_ = RMDEV_TEST_NULL;
+rmdev_test_printfCallback rmdev_test___printfCallback___ = RMDEV_TEST_NULL;
 static rmdev_test_delayCallback delayCallback_ = RMDEV_TEST_NULL;
 static rmdev_test_testEntryCallback testEntryCallback_ = RMDEV_TEST_NULL;
 
@@ -56,40 +56,48 @@ void rmdev_test_TestFixture_Constructor(void* const this_,
     }
 }
 
-void rmdev_test_expectTure(rmdev_test_TestSuit* const test_suit,
-                           rmdev_test_CompareMsg* const msg,
-                           const rmdev_test_CheckType check_type,
-                           const rmdev_test_bool_t result)
+const rmdev_test_CompareMsg* rmdev_test_checkTure(rmdev_test_CompareMsg* const msg,
+                                                  const rmdev_test_CheckType check_type,
+                                                  const rmdev_test_bool_t result)
 {
     msg->compare_type_msg = "true";
     msg->lhs_name = "expected";
     msg->lhs_value = "true";
     msg->rhs_value = result ? "true" : "false";
 
+    msg->is_passed = result;
+    msg->message = rmdev_test___printfCallback___;
+
     if (check_type == RMDEV_TEST_CHECK_TYPE_EXPECT) {
-        rmdev_test_expect(test_suit, msg, result);
+        rmdev_test_expect(msg->test_suit, msg, result);
     }
     else {
-        rmdev_test_assert(test_suit, msg, result);
+        rmdev_test_assert(msg->test_suit, msg, result);
     }
+
+    return msg;
 }
 
-void rmdev_test_expectFalse(rmdev_test_TestSuit* const test_suit,
-                            rmdev_test_CompareMsg* const msg,
-                            const rmdev_test_CheckType check_type,
-                            const rmdev_test_bool_t result)
+const rmdev_test_CompareMsg* rmdev_test_checkFalse(rmdev_test_CompareMsg* const msg,
+                                                   const rmdev_test_CheckType check_type,
+                                                   const rmdev_test_bool_t result)
 {
     msg->compare_type_msg = "true";
     msg->lhs_name = "expected";
     msg->lhs_value = "false";
     msg->rhs_value = result ? "true" : "false";
 
+    msg->is_passed = !result;
+    msg->message = rmdev_test___printfCallback___;
+
     if (check_type == RMDEV_TEST_CHECK_TYPE_EXPECT) {
-        rmdev_test_expect(test_suit, msg, !result);
+        rmdev_test_expect(msg->test_suit, msg, !result);
     }
     else {
-        rmdev_test_assert(test_suit, msg, !result);
+        rmdev_test_assert(msg->test_suit, msg, !result);
     }
+
+    return msg;
 }
 
 static void rmdev_test_expect(rmdev_test_TestSuit* const test_suit,
@@ -100,19 +108,27 @@ static void rmdev_test_expect(rmdev_test_TestSuit* const test_suit,
 
     if (result) {
         ++test_suit->success_count;
-        printfCallback_(".");
+        rmdev_test___printfCallback___(".");
     }
     else {
         ++test_suit->fail_count;
 
-        printfCallback_("F%s", line_break_character);
-        printfCallback_("Test suit \"%s\" expect %s: \"%s\" failed at ",
-                        test_suit->name,
-                        msg->compare_type_msg,
-                        msg->current_case_name);
-        printfCallback_("%s:%d: %s", msg->file, msg->line, line_break_character);
-        printfCallback_("lhs: %s%s    %s%s", msg->lhs_name, line_break_character, msg->lhs_value, line_break_character);
-        printfCallback_("rhs: %s%s    %s%s", msg->rhs_name, line_break_character, msg->rhs_value, line_break_character);
+        rmdev_test___printfCallback___("F%s", rmdev_test___line_break_character___);
+        rmdev_test___printfCallback___("Test suit \"%s\" expect %s: \"%s\" failed at ",
+                                       test_suit->name,
+                                       msg->compare_type_msg,
+                                       msg->current_case_name);
+        rmdev_test___printfCallback___("%s:%d: %s", msg->file, msg->line, rmdev_test___line_break_character___);
+        rmdev_test___printfCallback___("lhs: %s%s    %s%s",
+                                       msg->lhs_name,
+                                       rmdev_test___line_break_character___,
+                                       msg->lhs_value,
+                                       rmdev_test___line_break_character___);
+        rmdev_test___printfCallback___("rhs: %s%s    %s%s",
+                                       msg->rhs_name,
+                                       rmdev_test___line_break_character___,
+                                       msg->rhs_value,
+                                       rmdev_test___line_break_character___);
     }
 }
 
@@ -124,20 +140,27 @@ static void rmdev_test_assert(rmdev_test_TestSuit* const test_suit,
 
     if (result) {
         ++test_suit->success_count;
-        printfCallback_(".");
+        rmdev_test___printfCallback___(".");
     }
     else {
         ++test_suit->fail_count;
 
-        printfCallback_("F%s", line_break_character);
-        printfCallback_("Test suit \"%s\" assert %s failed at %s:%d:%s",
-                        test_suit->name,
-                        msg->compare_type_msg,
-                        msg->file,
-                        msg->line,
-                        line_break_character);
-        printfCallback_("lhs: %s%s    %s%s", msg->lhs_name, line_break_character, msg->lhs_value, line_break_character);
-        printfCallback_("rhs: %s%s    %s%s", msg->rhs_name, line_break_character, msg->rhs_value, line_break_character);
+        rmdev_test___printfCallback___("F%s", rmdev_test___line_break_character___);
+        rmdev_test___printfCallback___("Test suit \"%s\" assert %s: \"%s\" failed at ",
+                                       test_suit->name,
+                                       msg->compare_type_msg,
+                                       msg->current_case_name);
+        rmdev_test___printfCallback___("%s:%d: %s", msg->file, msg->line, rmdev_test___line_break_character___);
+        rmdev_test___printfCallback___("lhs: %s%s    %s%s",
+                                       msg->lhs_name,
+                                       rmdev_test___line_break_character___,
+                                       msg->lhs_value,
+                                       rmdev_test___line_break_character___);
+        rmdev_test___printfCallback___("rhs: %s%s    %s%s",
+                                       msg->rhs_name,
+                                       rmdev_test___line_break_character___,
+                                       msg->rhs_value,
+                                       rmdev_test___line_break_character___);
 
         rmdev_test_finish();
     }
@@ -166,25 +189,25 @@ void rmdev_test_run_test(rmdev_test_TestSuit* test_suit)
 static void rmdev_test_finish(void)
 {
     if (test_suit_success_count + test_suit_fail_count == test_suit_total_count) {
-        printfCallback_("%sTest Finished.%s%s    %d Test suit(s) finished: %d Succeeded, %d Failed.%s",
-                        line_break_character,
-                        line_break_character,
-                        line_break_character,
-                        test_suit_total_count,
-                        test_suit_success_count,
-                        test_suit_fail_count,
-                        line_break_character);
+        rmdev_test___printfCallback___("%sTest Finished.%s%s    %d Test suit(s) finished: %d Succeeded, %d Failed.%s",
+                                       rmdev_test___line_break_character___,
+                                       rmdev_test___line_break_character___,
+                                       rmdev_test___line_break_character___,
+                                       test_suit_total_count,
+                                       test_suit_success_count,
+                                       test_suit_fail_count,
+                                       rmdev_test___line_break_character___);
     }
     else {
         rmdev_test_error_code = RMDEV_TEST_TEST_SUIT_COUNT_ERROR;
 
-        printfCallback_(
+        rmdev_test___printfCallback___(
             "rmdev_test_framework Fatal error: Test suit count (%d) does not match success(%d) and fail(%d) "
             "counts!%s",
             test_suit_total_count,
             test_suit_success_count,
             test_suit_fail_count,
-            line_break_character);
+            rmdev_test___line_break_character___);
     }
 
     END_LOOP();
@@ -195,29 +218,30 @@ void rmdev_test_framework_main(const char* line_break,
                                const rmdev_test_delayCallback delayCallback,
                                const rmdev_test_testEntryCallback testEntryCallback)
 {
-    line_break_character = line_break;
+    rmdev_test___line_break_character___ = line_break;
 
-    printfCallback_ = printfCallback;
+    rmdev_test___printfCallback___ = printfCallback;
     delayCallback_ = delayCallback;
     testEntryCallback_ = testEntryCallback;
 
-    if (line_break_character == RMDEV_TEST_NULL) {
+    if (rmdev_test___line_break_character___ == RMDEV_TEST_NULL) {
         rmdev_test_error_code = RMDEV_TEST_NO_BREAK_CHARACTER;
         END_LOOP();
     }
-    if (printfCallback_ == RMDEV_TEST_NULL) {
+    if (rmdev_test___printfCallback___ == RMDEV_TEST_NULL) {
         rmdev_test_error_code = RMDEV_TEST_NO_PRINTF_CALLBACK;
         END_LOOP();
     }
     if (delayCallback_ == RMDEV_TEST_NULL) {
         rmdev_test_error_code = RMDEV_TEST_NO_DELAY_CALLBACK;
-        printfCallback_("rmdev_test_framework Fatal error: No delay callback function set!%s", line_break_character);
+        rmdev_test___printfCallback___("rmdev_test_framework Fatal error: No delay callback function set!%s",
+                                       rmdev_test___line_break_character___);
         END_LOOP();
     }
     if (testEntryCallback_ == RMDEV_TEST_NULL) {
         rmdev_test_error_code = RMDEV_TEST_NO_TEST_SUIT_CALLBACK;
-        printfCallback_("rmdev_test_framework Fatal error: No test suit callback function set!%s",
-                        line_break_character);
+        rmdev_test___printfCallback___("rmdev_test_framework Fatal error: No test suit callback function set!%s",
+                                       rmdev_test___line_break_character___);
         END_LOOP();
     }
 

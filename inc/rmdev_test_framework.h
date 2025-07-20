@@ -76,18 +76,27 @@ enum rmdev_test_CheckType_ {
 typedef unsigned char rmdev_test_CheckType;  ///< 检查类型
 
 typedef struct rmdev_test_CompareMsg {
-    const char* file;               ///< 调用函数所在的文件名
-    int line;                       ///< 调用函数所在的行号
+    rmdev_test_TestSuit* test_suit;     ///< 测试套件指针
 
-    const char* compare_type_msg;   ///< 比较方式的信息
+    const char* file;                   ///< 调用函数所在的文件名
+    int line;                           ///< 调用函数所在的行号
 
-    const char* current_case_name;  ///< 当前测试的名称
+    const char* compare_type_msg;       ///< 比较方式的信息
 
-    const char* lhs_name;           ///< 左侧参数的名称
-    const char* lhs_value;          ///< 左侧参数的值（字符串形式）
-    const char* rhs_name;           ///< 右侧参数的名称
-    const char* rhs_value;          ///< 右侧参数的值（字符串形式）
+    const char* current_case_name;      ///< 当前测试的名称
+
+    const char* lhs_name;               ///< 左侧参数的名称
+    const char* lhs_value;              ///< 左侧参数的值（字符串形式）
+    const char* rhs_name;               ///< 右侧参数的名称
+    const char* rhs_value;              ///< 右侧参数的值（字符串形式）
+
+    rmdev_test_bool_t is_passed;        ///< 测试通过
+
+    rmdev_test_printfCallback message;  ///< 输出信息的格式化输出回调函数
 } rmdev_test_CompareMsg;
+
+extern rmdev_test_printfCallback rmdev_test___printfCallback___;
+extern const char* rmdev_test___line_break_character___;
 
 extern void rmdev_test_TestFixture_Constructor(void* this_,
                                                void (*setUp)(rmdev_test_TestFixture* this_),
@@ -99,6 +108,7 @@ extern void rmdev_test_run_test(rmdev_test_TestSuit* test_suit);
 #define RMDEV_TEST_TEST_CASE_BEGIN(case_name)                        \
     do {                                                             \
         const char* rmdev___case_name = #case_name;                  \
+        rmdev_test_CompareMsg rmdev___msg;                           \
                                                                      \
         if (rmdev___suit->fixture != RMDEV_TEST_NULL) {              \
             if (rmdev___suit->fixture->setUp != RMDEV_TEST_NULL) {   \
@@ -138,32 +148,33 @@ extern void rmdev_test_run_test(rmdev_test_TestSuit* test_suit);
         rmdev_test_run_test(&rmdev___test_suit);                                                       \
     } while (0)
 
-void rmdev_test_expectTure(rmdev_test_TestSuit* test_suit,
-                           rmdev_test_CompareMsg* msg,
-                           rmdev_test_CheckType check_type,
-                           rmdev_test_bool_t result);
-void rmdev_test_expectFalse(rmdev_test_TestSuit* test_suit,
-                            rmdev_test_CompareMsg* msg,
-                            rmdev_test_CheckType check_type,
-                            rmdev_test_bool_t result);
+const rmdev_test_CompareMsg* rmdev_test_checkTure(rmdev_test_CompareMsg* msg,
+                                                  rmdev_test_CheckType check_type,
+                                                  rmdev_test_bool_t result);
+const rmdev_test_CompareMsg* rmdev_test_checkFalse(rmdev_test_CompareMsg* msg,
+                                                   rmdev_test_CheckType check_type,
+                                                   rmdev_test_bool_t result);
 
-#define RMDEV_TEST_EXPECT_TRUE(result)                                                           \
-    do {                                                                                         \
-        rmdev_test_CompareMsg rmdev___msg = {.file = __FILE__,                                   \
-                                             .line = __LINE__,                                   \
-                                             .current_case_name = rmdev___case_name,             \
-                                             .rhs_name = #result};                               \
-        rmdev_test_expectTure(rmdev___suit, &rmdev___msg, RMDEV_TEST_CHECK_TYPE_EXPECT, result); \
-    } while (0)
+#define RMDEV_TEST_EXPECT_TRUE(result)                  \
+    (rmdev___msg.test_suit = rmdev___suit,              \
+     rmdev___msg.file = __FILE__,                       \
+     rmdev___msg.line = __LINE__,                       \
+     rmdev___msg.current_case_name = rmdev___case_name, \
+     rmdev___msg.rhs_name = #result,                    \
+     rmdev_test_checkTure(&rmdev___msg, RMDEV_TEST_CHECK_TYPE_EXPECT, result))
 
-#define RMDEV_TEST_EXPECT_FALSE(result)                                                           \
-    do {                                                                                          \
-        rmdev_test_CompareMsg rmdev___msg = {.file = __FILE__,                                    \
-                                             .line = __LINE__,                                    \
-                                             .current_case_name = rmdev___case_name,              \
-                                             .rhs_name = #result};                                \
-        rmdev_test_expectFalse(rmdev___suit, &rmdev___msg, RMDEV_TEST_CHECK_TYPE_EXPECT, result); \
-    } while (0)
+#define RMDEV_TEST_EXPECT_FALSE(result)                 \
+    (rmdev___msg.test_suit = rmdev___suit,              \
+     rmdev___msg.file = __FILE__,                       \
+     rmdev___msg.line = __LINE__,                       \
+     rmdev___msg.current_case_name = rmdev___case_name, \
+     rmdev___msg.rhs_name = #result,                    \
+     rmdev_test_checkFalse(&rmdev___msg, RMDEV_TEST_CHECK_TYPE_EXPECT, result))
+
+#define RMDEV_TEST_MESSAGE(format, ...)                                 \
+    is_passed ? ((void)0)                                               \
+              : (rmdev_test___printfCallback___(format, ##__VA_ARGS__), \
+                 rmdev_test___printfCallback___("%s", rmdev_test___line_break_character___))
 
 /**
  * rmdev 测试框架 主函数
