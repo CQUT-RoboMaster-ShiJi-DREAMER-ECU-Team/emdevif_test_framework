@@ -21,6 +21,8 @@ TEST_SUIT(SuccessTest)
         EXPECT_TRUE(1 == 1)->RMDEV_TEST_MESSAGE("1 should be equal to 1!");
         EXPECT_FALSE(114514 == 1919810);
         EXPECT_FALSE(67978 == 0);
+        ASSERT_TRUE(1 == 1, "1 should be equal to 1!");
+        ASSERT_TRUE(2 != 1, "");
     }
     TEST_CASE_END();
 }

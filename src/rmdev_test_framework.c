@@ -24,13 +24,10 @@ static int test_suit_success_count = 0;  ///< 成功计数
 static int test_suit_fail_count = 0;     ///< 失败计数
 
 static void rmdev_test_finish(void);
-static void rmdev_test_expect(rmdev_test_TestSuit* test_suit,
-                              const rmdev_test_CompareMsg* msg,
-                              rmdev_test_bool_t result);
-static void rmdev_test_assert(rmdev_test_TestSuit* test_suit,
-                              const rmdev_test_CompareMsg* msg,
-                              rmdev_test_bool_t result);
-static void rmdev_test_defaultErrorCallback(rmdev_test_ErrorCode error_code, const char* message);
+static void rmdev_test_check(const rmdev_test_CompareMsg* msg,
+                             rmdev_test_CheckType check_type,
+                             rmdev_test_bool_t result);
+static void rmdev_test_defaultErrorCallback(rmdev_test_ErrorCode error_code);
 static void rmdev_test_deinit(void);
 
 /// 结束的死循环
@@ -50,6 +47,14 @@ void rmdev_test_TestFixture_Constructor(void* const this_,
     }
 }
 
+/**
+ * 检测结果是否为 true
+ * @attention 此函数由框架内部调用
+ * @param msg 比较信息
+ * @param check_type 检测方式（期望或断言）
+ * @param result 实际结果
+ * @return 比较信息（用于链式调用 message 方法）
+ */
 const rmdev_test_CompareMsg* rmdev_test_checkTure(rmdev_test_CompareMsg* const msg,
                                                   const rmdev_test_CheckType check_type,
                                                   const rmdev_test_bool_t result)
@@ -62,16 +67,19 @@ const rmdev_test_CompareMsg* rmdev_test_checkTure(rmdev_test_CompareMsg* const m
     msg->is_passed = result;
     msg->message = rmdev_test___printfCallback___;
 
-    if (check_type == RMDEV_TEST_CHECK_TYPE_EXPECT) {
-        rmdev_test_expect(msg->test_suit, msg, result);
-    }
-    else {
-        rmdev_test_assert(msg->test_suit, msg, result);
-    }
+    rmdev_test_check(msg, check_type, result);
 
     return msg;
 }
 
+/**
+ * 检测结果是否为 false
+ * @attention 此函数由框架内部调用
+ * @param msg 比较信息
+ * @param check_type 检测方式（期望或断言）
+ * @param result 实际结果
+ * @return 比较信息（用于链式调用 message 方法）
+ */
 const rmdev_test_CompareMsg* rmdev_test_checkFalse(rmdev_test_CompareMsg* const msg,
                                                    const rmdev_test_CheckType check_type,
                                                    const rmdev_test_bool_t result)
@@ -84,32 +92,34 @@ const rmdev_test_CompareMsg* rmdev_test_checkFalse(rmdev_test_CompareMsg* const 
     msg->is_passed = !result;
     msg->message = rmdev_test___printfCallback___;
 
-    if (check_type == RMDEV_TEST_CHECK_TYPE_EXPECT) {
-        rmdev_test_expect(msg->test_suit, msg, !result);
-    }
-    else {
-        rmdev_test_assert(msg->test_suit, msg, !result);
-    }
+    rmdev_test_check(msg, check_type, !result);
 
     return msg;
 }
 
-static void rmdev_test_expect(rmdev_test_TestSuit* const test_suit,
-                              const rmdev_test_CompareMsg* const msg,
-                              const rmdev_test_bool_t result)
+/**
+ * 检测判断结果
+ * @param msg 比较信息
+ * @param check_type
+ * @param result 比较结果
+ */
+static void rmdev_test_check(const rmdev_test_CompareMsg* const msg,
+                             const rmdev_test_CheckType check_type,
+                             const rmdev_test_bool_t result)
 {
-    ++test_suit->total_count;
+    ++msg->test_suit->total_count;
 
     if (result) {
-        ++test_suit->success_count;
+        ++msg->test_suit->success_count;
         rmdev_test___printfCallback___(".");
     }
     else {
-        ++test_suit->fail_count;
+        ++msg->test_suit->fail_count;
 
         rmdev_test___printfCallback___("F%s", rmdev_test___line_break_character___);
-        rmdev_test___printfCallback___("Test suit \"%s\" expect %s: \"%s\" failed at ",
-                                       test_suit->name,
+        rmdev_test___printfCallback___("Test suit \"%s\" %s %s: \"%s\" failed at ",
+                                       msg->test_suit->name,
+                                       ((check_type == RMDEV_TEST_CHECK_TYPE_EXPECT) ? "expect" : "assert"),
                                        msg->compare_type_msg,
                                        msg->current_case_name);
         rmdev_test___printfCallback___("%s:%d: %s", msg->file, msg->line, rmdev_test___line_break_character___);
@@ -126,40 +136,20 @@ static void rmdev_test_expect(rmdev_test_TestSuit* const test_suit,
     }
 }
 
-static void rmdev_test_assert(rmdev_test_TestSuit* const test_suit,
-                              const rmdev_test_CompareMsg* const msg,
-                              const rmdev_test_bool_t result)
+/**
+ * 断言失败后的入口函数
+ * @attention 此函数由框架内部调用
+ */
+void rmdev_test_assertFailEntry(void)
 {
-    ++test_suit->total_count;
-
-    if (result) {
-        ++test_suit->success_count;
-        rmdev_test___printfCallback___(".");
-    }
-    else {
-        ++test_suit->fail_count;
-
-        rmdev_test___printfCallback___("F%s", rmdev_test___line_break_character___);
-        rmdev_test___printfCallback___("Test suit \"%s\" assert %s: \"%s\" failed at ",
-                                       test_suit->name,
-                                       msg->compare_type_msg,
-                                       msg->current_case_name);
-        rmdev_test___printfCallback___("%s:%d: %s", msg->file, msg->line, rmdev_test___line_break_character___);
-        rmdev_test___printfCallback___("lhs: %s%s    %s%s",
-                                       msg->lhs_name,
-                                       rmdev_test___line_break_character___,
-                                       msg->lhs_value,
-                                       rmdev_test___line_break_character___);
-        rmdev_test___printfCallback___("rhs: %s%s    %s%s",
-                                       msg->rhs_name,
-                                       rmdev_test___line_break_character___,
-                                       msg->rhs_value,
-                                       rmdev_test___line_break_character___);
-
-        rmdev_test_finish();
-    }
+    rmdev_test_finish();
 }
 
+/**
+ * 执行测试套件
+ * @attention 此函数由框架内部调用
+ * @param test_suit 测试套件
+ */
 void rmdev_test_run_test(rmdev_test_TestSuit* test_suit)
 {
     current_running_suit = test_suit;
@@ -172,6 +162,21 @@ void rmdev_test_run_test(rmdev_test_TestSuit* test_suit)
     }
     else {
         ++test_suit_fail_count;
+    }
+
+    if (current_running_suit->total_count != current_running_suit->success_count + current_running_suit->fail_count) {
+        rmdev_test_error_code = RMDEV_TEST_TEST_SUIT_COUNT_ERROR;
+
+        rmdev_test___printfCallback___(
+            "rmdev_test_framework Fatal error: Test suit \"%s\" case count(%d) does not match success(%d) and fail(%d) "
+            "counts!%s",
+            current_running_suit->name,
+            current_running_suit->total_count,
+            current_running_suit->success_count,
+            current_running_suit->fail_count,
+            rmdev_test___line_break_character___);
+
+        errorCallback_(rmdev_test_error_code);
     }
 
     current_running_suit = RMDEV_TEST_NULL;
@@ -196,12 +201,14 @@ static void rmdev_test_finish(void)
         rmdev_test_error_code = RMDEV_TEST_TEST_SUIT_COUNT_ERROR;
 
         rmdev_test___printfCallback___(
-            "rmdev_test_framework Fatal error: Test suit count (%d) does not match success(%d) and fail(%d) "
+            "rmdev_test_framework Fatal error: Test suit count(%d) does not match success(%d) and fail(%d) "
             "counts!%s",
             test_suit_total_count,
             test_suit_success_count,
             test_suit_fail_count,
             rmdev_test___line_break_character___);
+
+        errorCallback_(rmdev_test_error_code);
     }
 
     if (testFinishCallback_ == RMDEV_TEST_NULL) {
@@ -253,16 +260,20 @@ void rmdev_test_framework_main(const char* line_break, const rmdev_test_Callback
     rmdev_test_finish();
 }
 
-static void rmdev_test_defaultErrorCallback(const rmdev_test_ErrorCode error_code, const char* message)
+/**
+ * 默认的错误处理回调函数
+ * @param error_code 错误码
+ */
+static void rmdev_test_defaultErrorCallback(const rmdev_test_ErrorCode error_code)
 {
     (void)error_code;
 
-    rmdev_test___printfCallback___("rmdev_test_framework Fatal error: %s%s",
-                                   message,
-                                   rmdev_test___line_break_character___);
     END_LOOP();
 }
 
+/**
+ * 重置测试框架
+ */
 static void rmdev_test_deinit(void)
 {
     rmdev_test_error_code = RMDEV_TEST_NO_ERROR;
