@@ -55,6 +55,11 @@ void testApiUsage(void)
     }
 }
 
+void testFinishHandler(void)
+{
+    exit(0);
+}
+
 int main(const int argc, char* argv[])
 {
     int choice = 1;
@@ -65,29 +70,41 @@ int main(const int argc, char* argv[])
 
         if (*end_ptr != '\0' || choice < 1 || choice > 5) {
             fprintf(stderr, "Invalid argument! Please provide a number between 1 and 5.\n");
-            return 1;
+            return -1;
         }
     }
+    else if (argc == 1) {
+        // do nothing
+    }
+    else {
+        fprintf(stderr, "Invalid argument! Please provide a number between 1 and 5.\n");
+        return -1;
+    }
+
+    const rmdev_test_Callbacks cb = {.printfCallback = my_printf,
+                                     .delayCallback = my_delay,
+                                     .testEntryCallback = testApiUsage,
+                                     .testFinishCallback = testFinishHandler};
 
     switch (choice) {
     case 1:
-        rmdev_test_framework_main("\n", my_printf, my_delay, testApiUsage);
+        rmdev_test_framework_main("\n", &cb);
         break;
     case 2:
-        rmdev_test_framework_main(NULL, my_printf, my_delay, testApiUsage);
+        rmdev_test_framework_main(NULL, &cb);
         break;
     case 3:
-        rmdev_test_framework_main("\n", NULL, my_delay, testApiUsage);
+        rmdev_test_framework_main("\n", &cb);
         break;
     case 4:
-        rmdev_test_framework_main("\n", my_printf, NULL, testApiUsage);
+        rmdev_test_framework_main("\n", &cb);
         break;
     case 5:
-        rmdev_test_framework_main("\n", my_printf, my_delay, NULL);
+        rmdev_test_framework_main("\n", &cb);
         break;
     default:
         fprintf(stderr, "Invalid choice!\n");
-        return 1;
+        return -1;
     }
 
     return 0;

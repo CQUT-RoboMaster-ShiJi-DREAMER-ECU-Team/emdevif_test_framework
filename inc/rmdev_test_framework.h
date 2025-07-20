@@ -19,6 +19,16 @@ typedef unsigned char rmdev_test_bool_t;
 
 #define RMDEV_TEST_NULL  ((void*)0)
 
+typedef enum rmdev_test_ErrorCode {
+    RMDEV_TEST_NO_ERROR = 0,            ///< 无错误
+    RMDEV_TEST_NO_BREAK_CHARACTER,      ///< 没有设置换行符
+    RMDEV_TEST_NO_PRINTF_CALLBACK,      ///< 没有设置 printf 回调函数
+    RMDEV_TEST_NO_DELAY_CALLBACK,       ///< 没有设置 delay 回调函数
+    RMDEV_TEST_NO_TEST_ENTRY_CALLBACK,  ///< 没有设置 testEntry 回调函数
+    RMDEV_TEST_TEST_SUIT_COUNT_ERROR,   ///< 测试项计数与成功、错误的项目计数不匹配
+    RMDEV_TEST_OTHER_ERROR              ///< 其他错误
+} rmdev_test_ErrorCode;
+
 /**
  * rmdev 测试框架 格式化输出回调函数类型
  * @param format 格式化字符串
@@ -36,6 +46,34 @@ typedef void (*rmdev_test_delayCallback)(unsigned int ms);
  * rmdev 测试框架 测试入口回调函数类型
  */
 typedef void (*rmdev_test_testEntryCallback)(void);
+
+/**
+ * 测试结束回调函数类型
+ */
+typedef void (*rmdev_test_testFinishCallback)(void);
+
+/**
+ * 测试错误处理
+ * @param error_code 错误码
+ * @param message 错误信息
+ */
+typedef void (*rmdev_test_errorCallback)(rmdev_test_ErrorCode error_code, const char* message);
+
+/**
+ * 需要由用户自定义的回调函数
+ */
+typedef struct rmdev_test_Callbacks {
+    rmdev_test_printfCallback printfCallback;          ///< 格式化输出回调函数
+    rmdev_test_delayCallback delayCallback;            ///< 延时回调函数
+    rmdev_test_testEntryCallback testEntryCallback;    ///< 测试入口回调函数
+
+    rmdev_test_testFinishCallback testFinishCallback;  ///< 测试结束（正常退出）回调函数
+                                                       ///< @note 这个函数指针可以传入 @c NULL
+                                                       ///< 以表示使用默认的结束方式：进入一个无限空循环
+    rmdev_test_errorCallback errorCallback;            ///< 错误处理回调函数
+                                                       ///< @note 这个函数指针可以传入 @c NULL
+                                                       ///< 以表示使用默认的结束方式：进入一个无限空循环
+} rmdev_test_Callbacks;
 
 /**
  * 测试夹具
@@ -98,10 +136,10 @@ typedef struct rmdev_test_CompareMsg {
 extern rmdev_test_printfCallback rmdev_test___printfCallback___;
 extern const char* rmdev_test___line_break_character___;
 
-extern void rmdev_test_TestFixture_Constructor(void* this_,
-                                               void (*setUp)(rmdev_test_TestFixture* this_),
-                                               void (*tearDown)(rmdev_test_TestFixture* this_));
-extern void rmdev_test_run_test(rmdev_test_TestSuit* test_suit);
+void rmdev_test_TestFixture_Constructor(void* this_,
+                                        void (*setUp)(rmdev_test_TestFixture* this_),
+                                        void (*tearDown)(rmdev_test_TestFixture* this_));
+void rmdev_test_run_test(rmdev_test_TestSuit* test_suit);
 
 #define RMDEV_TEST_TEST_SUIT(test_suit) void rmdev_test__##test_suit##__(rmdev_test_TestSuit* rmdev___suit)
 
@@ -180,14 +218,9 @@ const rmdev_test_CompareMsg* rmdev_test_checkFalse(rmdev_test_CompareMsg* msg,
  * rmdev 测试框架 主函数
  * @attention 需要将其放在真正的 main 函数中调用
  * @param line_break 换行符
- * @param printfCallback 用于格式化输出的回调函数
- * @param delayCallback 用于延时的回调函数
- * @param testEntryCallback 运行测试的入口回调函数
+ * @param callback
  */
-void rmdev_test_framework_main(const char* line_break,
-                               rmdev_test_printfCallback printfCallback,
-                               rmdev_test_delayCallback delayCallback,
-                               rmdev_test_testEntryCallback testEntryCallback);
+void rmdev_test_framework_main(const char* line_break, const rmdev_test_Callbacks* callback);
 
 #ifdef __cplusplus
 }
