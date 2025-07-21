@@ -1,3 +1,7 @@
+#!/bin/python
+
+# 用于将测试函数的输出文件（.out）中的文件名与行号进行替换（替换成 __FILE__:__LINE__）
+
 import sys
 
 if len(sys.argv) != 2:
@@ -22,13 +26,38 @@ except Exception as e:
 
 output_file.close()
 
+
+def replace_sub_string(src: str, begin: int, end: int, replace: str) -> str:
+    """
+    将字符串的给定区间替换成指定字符串
+    :param src: 待进行替换的字符串
+    :param begin: 区间开头
+    :param end: 区间结尾
+    :param replace: 用于替换的字符串
+    :return: 替换后的字符串
+    """
+    if begin >= end:
+        return src
+
+    return src[:begin] + replace + src[end:]
+
+
+def width_of_num(src: str) -> int:
+    """
+    计算给定字符串中的数字字符的宽度
+    :param src: 字符串
+    :return: 数字字符的宽度
+    """
+    _i: int = 0
+    while src[_i].isdigit():
+        _i += 1
+
+    return _i
+
+
 FILE_NAME_EXTENSION: str = ".c:"
 
-
-def replace_sub_string(dst: str, begin: int, end: int, src: str):
-    return dst[:begin] + src + dst[end:]
-
-
+# 逐行检测并替换文件名与行号
 for i in range(0, len(file_lines)):
     extension_index: int = file_lines[i].find(FILE_NAME_EXTENSION)
 
@@ -45,6 +74,14 @@ for i in range(0, len(file_lines)):
 
     assert file_lines[i][extension_index] == ":"
     assert file_lines[i][begin_index - 1] == " "
+
+    line_tmp: str = file_lines[i][extension_index + 1:]
+    line_num_width = width_of_num(line_tmp)
+    if line_num_width == 0:
+        continue
+    else:
+        if file_lines[i][extension_index + line_num_width + 1] != ":":
+            continue
 
     FILE_BEGIN_INDEX: int = begin_index
 
