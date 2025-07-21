@@ -150,6 +150,7 @@ static void rmdev_test_check(const rmdev_test_CompareMsg* const msg,
  */
 void rmdev_test_assertFailEntry(void)
 {
+    ++test_suit_fail_count;
     rmdev_test_finish();
 }
 
@@ -250,28 +251,29 @@ void rmdev_test_framework_main(const char* line_break,
     testFinishCallback_ = callback->testFinishCallback;
     errorCallback_ = callback->errorCallback;
 
+    if (errorCallback_ == RMDEV_TEST_NULL) {
+        errorCallback_ = rmdev_test_defaultErrorCallback;
+    }
+
     if (rmdev_test___line_break_character___ == RMDEV_TEST_NULL) {
         rmdev_test_error_code = RMDEV_TEST_NO_BREAK_CHARACTER;
-        END_LOOP();
+        errorCallback_(rmdev_test_error_code);
     }
     if (rmdev_test___printfCallback___ == RMDEV_TEST_NULL) {
         rmdev_test_error_code = RMDEV_TEST_NO_PRINTF_CALLBACK;
-        END_LOOP();
+        errorCallback_(rmdev_test_error_code);
     }
     if (delayCallback_ == RMDEV_TEST_NULL) {
         rmdev_test_error_code = RMDEV_TEST_NO_DELAY_CALLBACK;
         rmdev_test___printfCallback___("rmdev_test_framework Init error: No delay callback function set!%s",
                                        rmdev_test___line_break_character___);
-        END_LOOP();
+        errorCallback_(rmdev_test_error_code);
     }
     if (testEntryCallback_ == RMDEV_TEST_NULL) {
         rmdev_test_error_code = RMDEV_TEST_NO_TEST_ENTRY_CALLBACK;
         rmdev_test___printfCallback___("rmdev_test_framework Init error: No test entry callback function set!%s",
                                        rmdev_test___line_break_character___);
-        END_LOOP();
-    }
-    if (errorCallback_ == RMDEV_TEST_NULL) {
-        errorCallback_ = rmdev_test_defaultErrorCallback;
+        errorCallback_(rmdev_test_error_code);
     }
 
     if (user_hooks == RMDEV_TEST_NULL) {

@@ -6,10 +6,13 @@ set(CMAKE_C_STANDARD 11)
 
 find_package(Python3 REQUIRED)
 
+add_subdirectory(test_func_impl)
+
 function(runTest test_name)
     add_subdirectory(${test_name})
 
     add_test(NAME ${test_name}_gen COMMAND ${test_name})
+    set_tests_properties(${test_name}_gen PROPERTIES TIMEOUT 3)
 
     add_test(NAME ${test_name}_process COMMAND
         ${Python3_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/clear_file_line.py ${test_name}
@@ -28,3 +31,4 @@ function(runTest test_name)
 endfunction()
 
 runTest(classic_test)
+runTest(assert_test)

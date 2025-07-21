@@ -1,0 +1,11 @@
+.......F
+Test suit "AssertFailTest" assert true: "a" failed at __FILE__:__LINE__:
+lhs: expected
+    true
+rhs: false
+    false
+value = false
+
+Test Finished.
+
+    2 Test suit(s) finished: 1 Succeeded, 1 Failed.
