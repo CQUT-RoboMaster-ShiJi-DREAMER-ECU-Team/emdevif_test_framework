@@ -32,3 +32,5 @@ endfunction()
 
 runTest(classic_test)
 runTest(assert_test)
+runTest(no_suit_test)
+runTest(no_case_test)
