@@ -62,52 +62,18 @@ void testFinishHandler(void)
     exit(0);
 }
 
-int main(const int argc, char* argv[])
+int main(void)
 {
-    int choice = 1;
-
-    if (argc == 2) {
-        char* end_ptr;
-        choice = strtol(argv[1], &end_ptr, 10);
-
-        if (*end_ptr != '\0' || choice < 1 || choice > 5) {
-            fprintf(stderr, "Invalid argument! Please provide a number between 1 and 5.\n");
-            return -1;
-        }
-    }
-    else if (argc == 1) {
-        // do nothing
-    }
-    else {
-        fprintf(stderr, "Invalid argument! Please provide a number between 1 and 5.\n");
-        return -1;
-    }
+    openFile();
 
     const rmdev_test_Callbacks cb = {.printfCallback = my_printf,
                                      .delayCallback = my_delay,
                                      .testEntryCallback = testApiUsage,
                                      .testFinishCallback = testFinishHandler};
 
-    switch (choice) {
-    case 1:
-        rmdev_test_framework_main("\n", &cb, NULL);
-        break;
-    case 2:
-        rmdev_test_framework_main(NULL, &cb, NULL);
-        break;
-    case 3:
-        rmdev_test_framework_main("\n", &cb, NULL);
-        break;
-    case 4:
-        rmdev_test_framework_main("\n", &cb, NULL);
-        break;
-    case 5:
-        rmdev_test_framework_main("\n", &cb, NULL);
-        break;
-    default:
-        fprintf(stderr, "Invalid choice!\n");
-        return -1;
-    }
+    rmdev_test_framework_main("\n", &cb, NULL);
+
+    closeFile();
 
     return 0;
 }

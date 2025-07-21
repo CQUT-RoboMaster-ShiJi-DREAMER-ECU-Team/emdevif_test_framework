@@ -130,7 +130,7 @@ static void rmdev_test_check(const rmdev_test_CompareMsg* const msg,
                                        ((check_type == RMDEV_TEST_CHECK_TYPE_EXPECT) ? "expect" : "assert"),
                                        msg->compare_type_msg,
                                        msg->current_case_name);
-        rmdev_test___printfCallback___("%s:%d: %s", msg->file, msg->line, rmdev_test___line_break_character___);
+        rmdev_test___printfCallback___("%s:%d:%s", msg->file, msg->line, rmdev_test___line_break_character___);
         rmdev_test___printfCallback___("lhs: %s%s    %s%s",
                                        msg->lhs_name,
                                        rmdev_test___line_break_character___,

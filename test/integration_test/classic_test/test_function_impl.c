@@ -5,9 +5,13 @@
  * @brief 测试框架所需要的函数的实现
  */
 
+#include "test_function_impl.h"
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <unistd.h>  // For sleep function
+
+static FILE* file = NULL;
 
 void my_delay(const unsigned int ms)
 {
@@ -19,7 +23,24 @@ void my_printf(const char* format, ...)
     va_list args;
     va_start(args, format);
 
-    vprintf(format, args);
+    vfprintf(file, format, args);
 
     va_end(args);
+}
+
+void openFile(void)
+{
+    file = fopen("classic_test.out", "w");
+    if (file == NULL) {
+        fprintf(stderr, "Failed to open file\n");
+        exit(1);
+    }
+}
+
+void closeFile(void)
+{
+    if (file != NULL) {
+        fclose(file);
+        file = NULL;
+    }
 }
