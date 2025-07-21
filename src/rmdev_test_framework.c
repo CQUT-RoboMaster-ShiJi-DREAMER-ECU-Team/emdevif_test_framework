@@ -25,7 +25,11 @@ static int test_suit_total_count = 0;    ///< 测试套件计数
 static int test_suit_success_count = 0;  ///< 成功计数
 static int test_suit_fail_count = 0;     ///< 失败计数
 
-static rmdev_test_Hooks hooks;           ///< 钩子函数
+/**
+ * 钩子函数
+ * @attention 由框架内部调用
+ */
+rmdev_test_Hooks rmdev_test___hooks___;
 
 static void rmdev_test_finish(void);
 static void rmdev_test_check(const rmdev_test_CompareMsg* msg,
@@ -159,7 +163,11 @@ void rmdev_test_run_test_suit(rmdev_test_TestSuit* test_suit)
     current_running_suit = test_suit;
     ++test_suit_total_count;
 
+    RMDEV_TEST__RUN_HOOK(rmdev_test___hooks___.testSuitBeginHook, test_suit);
+
     test_suit->body(test_suit);
+
+    RMDEV_TEST__RUN_HOOK(rmdev_test___hooks___.testSuitEndHook, test_suit);
 
     if (test_suit->fail_count == 0) {
         ++test_suit_success_count;
@@ -215,6 +223,11 @@ static void rmdev_test_finish(void)
         errorCallback_(rmdev_test_error_code);
     }
 
+    RMDEV_TEST__RUN_HOOK(rmdev_test___hooks___.testEndHook,
+                         test_suit_total_count,
+                         test_suit_success_count,
+                         test_suit_fail_count);
+
     if (testFinishCallback_ == RMDEV_TEST_NULL) {
         END_LOOP();
     }
@@ -262,11 +275,13 @@ void rmdev_test_framework_main(const char* line_break,
     }
 
     if (user_hooks == RMDEV_TEST_NULL) {
-        memset(&hooks, 0, sizeof(rmdev_test_Hooks));
+        memset(&rmdev_test___hooks___, 0, sizeof(rmdev_test_Hooks));
     }
     else {
-        hooks = *user_hooks;
+        rmdev_test___hooks___ = *user_hooks;
     }
+
+    RMDEV_TEST__RUN_HOOK(rmdev_test___hooks___.testBeginHook, );
 
     testEntryCallback_();
 

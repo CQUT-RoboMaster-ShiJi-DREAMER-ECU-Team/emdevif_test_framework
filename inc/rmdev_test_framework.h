@@ -206,6 +206,15 @@ typedef struct rmdev_test_Hooks {
 
 extern rmdev_test_printfCallback rmdev_test___printfCallback___;
 extern const char* rmdev_test___line_break_character___;
+extern rmdev_test_Hooks rmdev_test___hooks___;
+
+/**
+ * 执行钩子函数
+ * @attention 由框架内部调用
+ * @param func 待运行的钩子函数
+ * @param ... 钩子函数的参数
+ */
+#define RMDEV_TEST__RUN_HOOK(func, ...) (func == RMDEV_TEST_NULL ? ((void)0) : func(__VA_ARGS__))
 
 /**
  * 测试夹具 - 构造函数
@@ -220,24 +229,28 @@ void rmdev_test_run_test_suit(rmdev_test_TestSuit* test_suit);
 
 #define RMDEV_TEST_TEST_SUIT(test_suit) void rmdev_test__##test_suit##__(rmdev_test_TestSuit* rmdev___suit)
 
-#define RMDEV_TEST_TEST_CASE_BEGIN(case_name)                        \
-    do {                                                             \
-        const char* rmdev___case_name = #case_name;                  \
-        rmdev_test_CompareMsg rmdev___msg;                           \
-                                                                     \
-        if (rmdev___suit->fixture != RMDEV_TEST_NULL) {              \
-            if (rmdev___suit->fixture->setUp != RMDEV_TEST_NULL) {   \
-                rmdev___suit->fixture->setUp(rmdev___suit->fixture); \
-            }                                                        \
+#define RMDEV_TEST_TEST_CASE_BEGIN(case_name)                                        \
+    do {                                                                             \
+        const char* rmdev___case_name = #case_name;                                  \
+        rmdev_test_CompareMsg rmdev___msg;                                           \
+                                                                                     \
+        RMDEV_TEST__RUN_HOOK(rmdev_test___hooks___.testCaseBeginHook, &rmdev___msg); \
+                                                                                     \
+        if (rmdev___suit->fixture != RMDEV_TEST_NULL) {                              \
+            if (rmdev___suit->fixture->setUp != RMDEV_TEST_NULL) {                   \
+                rmdev___suit->fixture->setUp(rmdev___suit->fixture);                 \
+            }                                                                        \
         }
 
-#define RMDEV_TEST_TEST_CASE_END(void)                              \
-    if (rmdev___suit->fixture != RMDEV_TEST_NULL) {                 \
-        if (rmdev___suit->fixture->tearDown != RMDEV_TEST_NULL) {   \
-            rmdev___suit->fixture->tearDown(rmdev___suit->fixture); \
-        }                                                           \
-    }                                                               \
-    }                                                               \
+#define RMDEV_TEST_TEST_CASE_END(void)                                         \
+    if (rmdev___suit->fixture != RMDEV_TEST_NULL) {                            \
+        if (rmdev___suit->fixture->tearDown != RMDEV_TEST_NULL) {              \
+            rmdev___suit->fixture->tearDown(rmdev___suit->fixture);            \
+        }                                                                      \
+    }                                                                          \
+                                                                               \
+    RMDEV_TEST__RUN_HOOK(rmdev_test___hooks___.testCaseEndHook, &rmdev___msg); \
+    }                                                                          \
     while (0)
 
 #define RMDEV_TEST_RUN_SUIT(test_suit)                                                \
