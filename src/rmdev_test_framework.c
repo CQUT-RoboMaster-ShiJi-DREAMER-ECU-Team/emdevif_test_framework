@@ -122,6 +122,34 @@ static void setCompareName(rmdev_test_CompareMsg* const msg, const rmdev_test_Co
 }
 
 /**
+ * 字符串相等
+ * @attention 此函数由框架内部调用
+ * @param msg 比较信息
+ * @param check_type 检查类型
+ * @param lhs 左侧参数
+ * @param rhs 右侧参数
+ * @return 比较信息（用于链式调用 MESSAGE 宏）
+ */
+const rmdev_test_CompareMsg* rmdev_test_strEqual(rmdev_test_CompareMsg* const msg,
+                                                 const rmdev_test_CheckType check_type,
+                                                 const char* const lhs,
+                                                 const char* const rhs)
+{
+    sprintf(lhs_buffer, "%s", lhs);
+    sprintf(rhs_buffer, "%s", rhs);
+    msg->lhs_value = lhs_buffer;
+    msg->rhs_value = rhs_buffer;
+
+    setCompareName(msg, RMDEV_TEST_COMPARE_EQUAL);
+
+    msg->is_passed = (strcmp(lhs, rhs) == 0);
+
+    printCheckResult(msg, check_type);
+
+    return msg;
+}
+
+/**
  * 整型比较
  * @attention 此函数由框架内部调用
  * @param msg 比较信息
@@ -202,7 +230,7 @@ const rmdev_test_CompareMsg* rmdev_test_checkFalse(rmdev_test_CompareMsg* const 
 /**
  * 输出检查结果
  * @param msg 比较信息
- * @param check_type
+ * @param check_type 检测方式（期望或断言）
  */
 static void printCheckResult(const rmdev_test_CompareMsg* const msg, const rmdev_test_CheckType check_type)
 {

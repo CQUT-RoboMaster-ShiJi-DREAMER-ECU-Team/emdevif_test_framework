@@ -40,6 +40,15 @@ TEST_SUIT(SuccessTest)
         RMDEV_TEST_INT_ASSERT_EQ(1, 1, "");
     }
     TEST_CASE_END();
+
+    TEST_CASE_BEGIN(StringEq)
+    {
+        EXPECT_STREQ("fwsg", "fwsg");
+
+        const char* str1 = "Hfhueiwsgb";
+        EXPECT_STREQ("Hfhueiwsgb", str1);
+    }
+    TEST_CASE_END();
 }
 
 TEST_SUIT(TrueFalseTest)
@@ -67,6 +76,9 @@ TEST_SUIT(TrueFalseTest)
         INT_EXPECT_LT(-9, 0);
         INT_EXPECT_LT(-9, -9);
         INT_EXPECT_LE(1, 0);
+
+        char str_arr[] = "Hello, World!";
+        EXPECT_STREQ(str_arr, "dsuighr")->MESSAGE("str_arr is: %s", str_arr);
     }
     TEST_CASE_END();
 }

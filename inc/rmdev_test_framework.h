@@ -13,5 +13,6 @@
 
 #include "rmdev_test_framework/check_bool_macro.h"
 #include "rmdev_test_framework/check_int_macro.h"
+#include "rmdev_test_framework/check_str_macro.h"
 
 #endif  // RMDEV_TEST_FRAMEWORK_H

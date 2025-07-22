@@ -289,6 +289,10 @@ const rmdev_test_CompareMsg* rmdev_test_intCompare(rmdev_test_CompareMsg* msg,
                                                    rmdev_test_CompareType compare_type,
                                                    int lhs,
                                                    int rhs);
+const rmdev_test_CompareMsg* rmdev_test_strEqual(rmdev_test_CompareMsg* msg,
+                                                 rmdev_test_CheckType check_type,
+                                                 const char* lhs,
+                                                 const char* rhs);
 void rmdev_test_assertFailEntry(void);
 
 #define RMDEV_TEST_MESSAGE(format, ...)                                 \

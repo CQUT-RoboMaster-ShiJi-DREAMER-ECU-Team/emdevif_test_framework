@@ -1,4 +1,4 @@
-................F
+..................F
 Test suit "TrueFalseTest" expect "true": Case "ExpectFail" failed at __FILE__:__LINE__:
 lhs: expected
     true
@@ -61,6 +61,13 @@ lhs: 1
     1 (0x1)
 rhs: 0
     0 (0)
+F
+Test suit "TrueFalseTest" expect "==": Case "ExpectFail" failed at __FILE__:__LINE__:
+lhs: str_arr
+    Hello, World!
+rhs: "dsuighr"
+    dsuighr
+str_arr is: Hello, World!
 ....F
 Test suit "ExternalTest" expect "true": Case "ExternalTestCase" failed at __FILE__:__LINE__:
 lhs: expected
