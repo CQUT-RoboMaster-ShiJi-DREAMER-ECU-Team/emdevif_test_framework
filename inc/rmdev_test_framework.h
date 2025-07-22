@@ -41,13 +41,16 @@ typedef unsigned char rmdev_test_bool_t;
  * 错误码
  */
 typedef enum rmdev_test_ErrorCode {
-    RMDEV_TEST_NO_ERROR = 0,            ///< 无错误
-    RMDEV_TEST_NO_BREAK_CHARACTER,      ///< 没有设置换行符
-    RMDEV_TEST_NO_PRINTF_CALLBACK,      ///< 没有设置 printf 回调函数
-    RMDEV_TEST_NO_DELAY_CALLBACK,       ///< 没有设置 delay 回调函数
-    RMDEV_TEST_NO_TEST_ENTRY_CALLBACK,  ///< 没有设置 testEntry 回调函数
-    RMDEV_TEST_TEST_SUIT_COUNT_ERROR,   ///< 测试项计数与成功、错误的项目计数不匹配
-    RMDEV_TEST_OTHER_ERROR              ///< 其他错误
+    RMDEV_TEST_EXIST_FAIL = 1,               ///< 存在未通过的测试
+    RMDEV_TEST_ALL_PASSED = 0,               ///< 全部测试通过
+
+    RMDEV_TEST_NO_ERROR = 0,                 ///< 无错误
+    RMDEV_TEST_NO_BREAK_CHARACTER = -1,      ///< 没有设置换行符
+    RMDEV_TEST_NO_PRINTF_CALLBACK = -2,      ///< 没有设置 printf 回调函数
+    RMDEV_TEST_NO_DELAY_CALLBACK = -3,       ///< 没有设置 delay 回调函数
+    RMDEV_TEST_NO_TEST_ENTRY_CALLBACK = -4,  ///< 没有设置 testEntry 回调函数
+    RMDEV_TEST_TEST_SUIT_COUNT_ERROR = -5,   ///< 测试项计数与成功、错误的项目计数不匹配
+    RMDEV_TEST_OTHER_ERROR = -6              ///< 其他错误
 } rmdev_test_ErrorCode;
 
 /**
@@ -70,8 +73,9 @@ typedef void (*rmdev_test_testEntryCallback)(void);
 
 /**
  * 测试结束回调函数类型
+ * @param error_code 错误码。测试全部通过传入 RMDEV_TEST_ALL_PASSED，否则传入 RMDEV_TEST_EXIST_FAIL
  */
-typedef void (*rmdev_test_testFinishCallback)(void);
+typedef void (*rmdev_test_testFinishCallback)(rmdev_test_ErrorCode error_code);
 
 /**
  * 测试错误处理

@@ -29,9 +29,9 @@ static void testEntry(void)
 {
 }
 
-static void testFinishHandler(void)
+static void testFinishHandler(const rmdev_test_ErrorCode error_code)
 {
-    exit(0);
+    exit((error_code == RMDEV_TEST_ALL_PASSED ? 0 : 1));
 }
 
 int main(void)

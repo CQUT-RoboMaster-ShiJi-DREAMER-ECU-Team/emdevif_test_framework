@@ -9,7 +9,7 @@
 
 #include <string.h>
 
-unsigned char rmdev_test_error_code = RMDEV_TEST_NO_ERROR;           ///< 测试框架错误码
+rmdev_test_ErrorCode rmdev_test_error_code = RMDEV_TEST_NO_ERROR;    ///< 测试框架错误码
 
 const char* rmdev_test___line_break_character___ = RMDEV_TEST_NULL;  ///< 换行符
 
@@ -233,7 +233,12 @@ static void rmdev_test_finish(void)
         END_LOOP();
     }
     else {
-        testFinishCallback_();
+        if (rmdev_test_error_code == RMDEV_TEST_NO_ERROR && test_suit_fail_count == 0) {
+            testFinishCallback_(RMDEV_TEST_ALL_PASSED);
+        }
+        else {
+            testFinishCallback_(RMDEV_TEST_EXIST_FAIL);
+        }
     }
 }
 

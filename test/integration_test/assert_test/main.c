@@ -75,9 +75,9 @@ static void testEntry(void)
     RUN_SUIT(TrueTest);
 }
 
-static void testFinishHandler(void)
+static void testFinishHandler(const rmdev_test_ErrorCode error_code)
 {
-    exit(0);
+    exit((error_code == RMDEV_TEST_EXIST_FAIL ? 0 : 1));
 }
 
 int main(void)
