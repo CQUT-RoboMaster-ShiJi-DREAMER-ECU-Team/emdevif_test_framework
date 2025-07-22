@@ -1,5 +1,5 @@
 .......F
-Test suit "AssertFailTest" assert true: "a" failed at __FILE__:__LINE__:
+Test suit "AssertFailTest" assert "true": Case "a" failed at __FILE__:__LINE__:
 lhs: expected
     true
 rhs: false

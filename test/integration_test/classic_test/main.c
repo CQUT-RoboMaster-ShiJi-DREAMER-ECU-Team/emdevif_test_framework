@@ -25,6 +25,21 @@ TEST_SUIT(SuccessTest)
         ASSERT_TRUE(2 != 1, "");
     }
     TEST_CASE_END();
+
+    TEST_CASE_BEGIN(IntCompare)
+    {
+        INT_EXPECT_EQ(3, 3);
+        INT_EXPECT_GT(235326, -45);
+        INT_EXPECT_NE(1, 2);
+        INT_EXPECT_GE(2, -9);
+        INT_EXPECT_GE(2, 2);
+        INT_EXPECT_LT(-9, 0);
+        INT_EXPECT_LE(-1, 0);
+        INT_EXPECT_LE(-114514, -114514);
+
+        RMDEV_TEST_INT_ASSERT_EQ(1, 1, "");
+    }
+    TEST_CASE_END();
 }
 
 TEST_SUIT(TrueFalseTest)
@@ -40,6 +55,18 @@ TEST_SUIT(TrueFalseTest)
     {
         EXPECT_TRUE(1 == 3)->MESSAGE("1 should not be equal to %d!", 3);
         EXPECT_FALSE(114514 == 114514)->MESSAGE("114514 should not be equal to 114514!");
+
+        const int a = 3, b = 1;
+        INT_EXPECT_EQ(a, b)->MESSAGE("lhs = %d, rhs = %d", a, b);
+
+        INT_EXPECT_EQ(3, -3);
+        INT_EXPECT_GT(-235326, -45);
+        INT_EXPECT_GT(-235326, -235326);
+        INT_EXPECT_NE(2, 2);
+        INT_EXPECT_GE(2, 9);
+        INT_EXPECT_LT(-9, 0);
+        INT_EXPECT_LT(-9, -9);
+        INT_EXPECT_LE(1, 0);
     }
     TEST_CASE_END();
 }

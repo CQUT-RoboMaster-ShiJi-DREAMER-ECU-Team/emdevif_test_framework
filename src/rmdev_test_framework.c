@@ -5,9 +5,10 @@
  * @brief rmdev 测试框架
  */
 
-#include "rmdev_test_framework.h"
+#include "rmdev_test_framework/core.h"
 
 #include <string.h>
+#include <stdio.h>
 
 rmdev_test_ErrorCode rmdev_test_error_code = RMDEV_TEST_NO_ERROR;    ///< 测试框架错误码
 
@@ -25,6 +26,12 @@ static int test_suit_total_count = 0;    ///< 测试套件计数
 static int test_suit_success_count = 0;  ///< 成功计数
 static int test_suit_fail_count = 0;     ///< 失败计数
 
+#ifndef RMDEV_TEST_VALUE_BUFFER_SIZE
+#define RMDEV_TEST_VALUE_BUFFER_SIZE 128
+#endif
+
+static char lhs_buffer[RMDEV_TEST_VALUE_BUFFER_SIZE], rhs_buffer[RMDEV_TEST_VALUE_BUFFER_SIZE];
+
 /**
  * 钩子函数
  * @attention 由框架内部调用
@@ -32,16 +39,43 @@ static int test_suit_fail_count = 0;     ///< 失败计数
 rmdev_test_Hooks rmdev_test___hooks___;
 
 static void rmdev_test_finish(void);
-static void rmdev_test_check(const rmdev_test_CompareMsg* msg,
-                             rmdev_test_CheckType check_type,
-                             rmdev_test_bool_t result);
+static void printCheckResult(const rmdev_test_CompareMsg* msg, rmdev_test_CheckType check_type);
 static void rmdev_test_defaultErrorCallback(rmdev_test_ErrorCode error_code);
 static void rmdev_test_deinit(void);
+static void setCompareName(rmdev_test_CompareMsg* msg, rmdev_test_CompareType compare_type);
 
 /// 结束的死循环
 #define END_LOOP(void) \
     do {               \
     } while (RMDEV_TEST_TRUE)
+
+#define DECL_COMPARE(Type) rmdev_test_bool_t compare_##Type(Type lhs, Type rhs, rmdev_test_CompareType compare_type)
+
+#define DEF_COMPARE(Type)                                                                                       \
+    rmdev_test_bool_t compare_##Type(const Type lhs, const Type rhs, const rmdev_test_CompareType compare_type) \
+    {                                                                                                           \
+        switch (compare_type) {                                                                                 \
+        case RMDEV_TEST_COMPARE_EQUAL:                                                                          \
+            return (lhs == rhs);                                                                                \
+        case RMDEV_TEST_COMPARE_NOT_EQUAL:                                                                      \
+            return (lhs != rhs);                                                                                \
+        case RMDEV_TEST_COMPARE_GREATER_THAN:                                                                   \
+            return (lhs > rhs);                                                                                 \
+        case RMDEV_TEST_COMPARE_LESS_THAN:                                                                      \
+            return (lhs < rhs);                                                                                 \
+        case RMDEV_TEST_COMPARE_GREATER_EQUAL:                                                                  \
+            return (lhs >= rhs);                                                                                \
+        case RMDEV_TEST_COMPARE_LESS_EQUAL:                                                                     \
+            return (lhs <= rhs);                                                                                \
+                                                                                                                \
+        default:                                                                                                \
+            return RMDEV_TEST_FALSE;                                                                            \
+        }                                                                                                       \
+    }
+
+#define CALL_COMPARE(Type) compare_##Type
+
+static DECL_COMPARE(int);
 
 void rmdev_test_TestFixture_Constructor(void* const this_,
                                         void (*setUp)(rmdev_test_TestFixture* this_),
@@ -56,26 +90,87 @@ void rmdev_test_TestFixture_Constructor(void* const this_,
 }
 
 /**
+ * 设置比较的名称
+ * @param msg 比较的信息
+ * @param compare_type 比较的类型
+ */
+static void setCompareName(rmdev_test_CompareMsg* const msg, const rmdev_test_CompareType compare_type)
+{
+    switch (compare_type) {
+    case RMDEV_TEST_COMPARE_EQUAL:
+        msg->compare_type_name = "==";
+        break;
+    case RMDEV_TEST_COMPARE_NOT_EQUAL:
+        msg->compare_type_name = "!=";
+        break;
+    case RMDEV_TEST_COMPARE_GREATER_THAN:
+        msg->compare_type_name = ">";
+        break;
+    case RMDEV_TEST_COMPARE_LESS_THAN:
+        msg->compare_type_name = "<";
+        break;
+    case RMDEV_TEST_COMPARE_GREATER_EQUAL:
+        msg->compare_type_name = ">=";
+        break;
+    case RMDEV_TEST_COMPARE_LESS_EQUAL:
+        msg->compare_type_name = "<=";
+        break;
+
+    default:
+        break;
+    }
+}
+
+/**
+ * 整型比较
+ * @attention 此函数由框架内部调用
+ * @param msg 比较信息
+ * @param check_type 检查类型
+ * @param compare_type 比较类型
+ * @param lhs 左侧参数
+ * @param rhs 右侧参数
+ * @return 比较信息（用于链式调用 MESSAGE 宏）
+ */
+const rmdev_test_CompareMsg* rmdev_test_intCompare(rmdev_test_CompareMsg* const msg,
+                                                   const rmdev_test_CheckType check_type,
+                                                   const rmdev_test_CompareType compare_type,
+                                                   const int lhs,
+                                                   const int rhs)
+{
+    sprintf(lhs_buffer, "%d (%#x)", lhs, lhs);
+    sprintf(rhs_buffer, "%d (%#x)", rhs, rhs);
+    msg->lhs_value = lhs_buffer;
+    msg->rhs_value = rhs_buffer;
+
+    setCompareName(msg, compare_type);
+
+    msg->is_passed = CALL_COMPARE(int)(lhs, rhs, compare_type);
+
+    printCheckResult(msg, check_type);
+
+    return msg;
+}
+
+/**
  * 检测结果是否为 true
  * @attention 此函数由框架内部调用
  * @param msg 比较信息
  * @param check_type 检测方式（期望或断言）
  * @param result 实际结果
- * @return 比较信息（用于链式调用 message 方法）
+ * @return 比较信息（用于链式调用 MESSAGE 宏）
  */
 const rmdev_test_CompareMsg* rmdev_test_checkTure(rmdev_test_CompareMsg* const msg,
                                                   const rmdev_test_CheckType check_type,
                                                   const rmdev_test_bool_t result)
 {
-    msg->compare_type_msg = "true";
+    msg->compare_type_name = "true";
     msg->lhs_name = "expected";
     msg->lhs_value = "true";
     msg->rhs_value = result ? "true" : "false";
 
     msg->is_passed = result;
-    msg->message = rmdev_test___printfCallback___;
 
-    rmdev_test_check(msg, check_type, result);
+    printCheckResult(msg, check_type);
 
     return msg;
 }
@@ -86,38 +181,34 @@ const rmdev_test_CompareMsg* rmdev_test_checkTure(rmdev_test_CompareMsg* const m
  * @param msg 比较信息
  * @param check_type 检测方式（期望或断言）
  * @param result 实际结果
- * @return 比较信息（用于链式调用 message 方法）
+ * @return 比较信息（用于链式调用 MESSAGE 宏）
  */
 const rmdev_test_CompareMsg* rmdev_test_checkFalse(rmdev_test_CompareMsg* const msg,
                                                    const rmdev_test_CheckType check_type,
                                                    const rmdev_test_bool_t result)
 {
-    msg->compare_type_msg = "true";
+    msg->compare_type_name = "true";
     msg->lhs_name = "expected";
     msg->lhs_value = "false";
     msg->rhs_value = result ? "true" : "false";
 
     msg->is_passed = !result;
-    msg->message = rmdev_test___printfCallback___;
 
-    rmdev_test_check(msg, check_type, !result);
+    printCheckResult(msg, check_type);
 
     return msg;
 }
 
 /**
- * 检测判断结果
+ * 输出检查结果
  * @param msg 比较信息
  * @param check_type
- * @param result 比较结果
  */
-static void rmdev_test_check(const rmdev_test_CompareMsg* const msg,
-                             const rmdev_test_CheckType check_type,
-                             const rmdev_test_bool_t result)
+static void printCheckResult(const rmdev_test_CompareMsg* const msg, const rmdev_test_CheckType check_type)
 {
     ++msg->test_suit->total_count;
 
-    if (result) {
+    if (msg->is_passed) {
         ++msg->test_suit->success_count;
         rmdev_test___printfCallback___(".");
     }
@@ -125,10 +216,10 @@ static void rmdev_test_check(const rmdev_test_CompareMsg* const msg,
         ++msg->test_suit->fail_count;
 
         rmdev_test___printfCallback___("F%s", rmdev_test___line_break_character___);
-        rmdev_test___printfCallback___("Test suit \"%s\" %s %s: \"%s\" failed at ",
+        rmdev_test___printfCallback___("Test suit \"%s\" %s \"%s\": Case \"%s\" failed at ",
                                        msg->test_suit->name,
                                        ((check_type == RMDEV_TEST_CHECK_TYPE_EXPECT) ? "expect" : "assert"),
-                                       msg->compare_type_msg,
+                                       msg->compare_type_name,
                                        msg->current_case_name);
         rmdev_test___printfCallback___("%s:%d:%s", msg->file, msg->line, rmdev_test___line_break_character___);
         rmdev_test___printfCallback___("lhs: %s%s    %s%s",
@@ -327,3 +418,5 @@ static void rmdev_test_deinit(void)
     test_suit_success_count = 0;
     test_suit_fail_count = 0;
 }
+
+static DEF_COMPARE(int)
