@@ -9,6 +9,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 
 rmdev_test_ErrorCode rmdev_test_error_code = RMDEV_TEST_NO_ERROR;    ///< 测试框架错误码
 
@@ -38,11 +39,16 @@ static char lhs_buffer[RMDEV_TEST_VALUE_BUFFER_SIZE], rhs_buffer[RMDEV_TEST_VALU
  */
 rmdev_test_Hooks rmdev_test___hooks___;
 
+#ifndef RMDEV_TEST_FLOAT_EQUAL_ERROR
+#define RMDEV_TEST_FLOAT_EQUAL_ERROR 0.0001
+#endif
+
+static rmdev_test_bool_t floatPointEqual(double lhs, double rhs);
+static void setCompareName(rmdev_test_CompareMsg* msg, rmdev_test_CompareType compare_type);
 static void rmdev_test_finish(void);
 static void printCheckResult(const rmdev_test_CompareMsg* msg, rmdev_test_CheckType check_type);
 static void rmdev_test_defaultErrorCallback(rmdev_test_ErrorCode error_code);
 static void rmdev_test_deinit(void);
-static void setCompareName(rmdev_test_CompareMsg* msg, rmdev_test_CompareType compare_type);
 
 /// 结束的死循环
 #define END_LOOP(void) \
@@ -75,7 +81,11 @@ static void setCompareName(rmdev_test_CompareMsg* msg, rmdev_test_CompareType co
 
 #define CALL_COMPARE(Type) compare_##Type
 
+typedef unsigned int rmdev_test_uint_t;
+
 static DECL_COMPARE(int);
+static DECL_COMPARE(rmdev_test_uint_t);
+static DECL_COMPARE(double);
 
 void rmdev_test_TestFixture_Constructor(void* const this_,
                                         void (*setUp)(rmdev_test_TestFixture* this_),
@@ -173,6 +183,89 @@ const rmdev_test_CompareMsg* rmdev_test_intCompare(rmdev_test_CompareMsg* const 
     setCompareName(msg, compare_type);
 
     msg->is_passed = CALL_COMPARE(int)(lhs, rhs, compare_type);
+
+    printCheckResult(msg, check_type);
+
+    return msg;
+}
+
+/**
+ * 无符号整型比较
+ * @attention 此函数由框架内部调用
+ * @param msg 比较信息
+ * @param check_type 检查类型
+ * @param compare_type 比较类型
+ * @param lhs 左侧参数
+ * @param rhs 右侧参数
+ * @return 比较信息（用于链式调用 MESSAGE 宏）
+ */
+const rmdev_test_CompareMsg* rmdev_test_uintCompare(rmdev_test_CompareMsg* const msg,
+                                                    const rmdev_test_CheckType check_type,
+                                                    const rmdev_test_CompareType compare_type,
+                                                    const unsigned int lhs,
+                                                    const unsigned int rhs)
+{
+    sprintf(lhs_buffer, "%u (%#x)", lhs, lhs);
+    sprintf(rhs_buffer, "%u (%#x)", rhs, rhs);
+    msg->lhs_value = lhs_buffer;
+    msg->rhs_value = rhs_buffer;
+
+    setCompareName(msg, compare_type);
+
+    msg->is_passed = CALL_COMPARE(rmdev_test_uint_t)(lhs, rhs, compare_type);
+
+    printCheckResult(msg, check_type);
+
+    return msg;
+}
+
+/**
+ * 判断浮点数是否相等（二者之差的绝对值小于 RMDEV_TEST_FLOAT_EQUAL_ERROR 时，认为相等）
+ * @param lhs 左侧参数
+ * @param rhs 右侧参数
+ * @return 是否相等
+ */
+static rmdev_test_bool_t floatPointEqual(const double lhs, const double rhs)
+{
+    return (fabs(lhs - rhs) <= RMDEV_TEST_FLOAT_EQUAL_ERROR);
+}
+
+/**
+ * 浮点类型比较（二者之差的绝对值小于 RMDEV_TEST_FLOAT_EQUAL_ERROR 时，认为相等）
+ * @attention 此函数由框架内部调用
+ * @param msg 比较信息
+ * @param check_type 检查类型
+ * @param compare_type 比较类型
+ * @param lhs 左侧参数
+ * @param rhs 右侧参数
+ * @return 比较信息（用于链式调用 MESSAGE 宏）
+ */
+const rmdev_test_CompareMsg* rmdev_test_floatPointCompare(rmdev_test_CompareMsg* const msg,
+                                                          const rmdev_test_CheckType check_type,
+                                                          const rmdev_test_CompareType compare_type,
+                                                          const double lhs,
+                                                          const double rhs)
+{
+    sprintf(lhs_buffer, "%lf", lhs);
+    sprintf(rhs_buffer, "%lf", rhs);
+    msg->lhs_value = lhs_buffer;
+    msg->rhs_value = rhs_buffer;
+
+    setCompareName(msg, compare_type);
+
+    switch (compare_type) {
+    case RMDEV_TEST_COMPARE_EQUAL:
+        msg->is_passed = floatPointEqual(lhs, rhs);
+        break;
+
+    case RMDEV_TEST_COMPARE_NOT_EQUAL:
+        msg->is_passed = !floatPointEqual(lhs, rhs);
+        break;
+
+    default:
+        msg->is_passed = CALL_COMPARE(double)(lhs, rhs, compare_type);
+        break;
+    }
 
     printCheckResult(msg, check_type);
 
@@ -447,4 +540,10 @@ static void rmdev_test_deinit(void)
     test_suit_fail_count = 0;
 }
 
+/* clang-format off */
+
 static DEF_COMPARE(int)
+static DEF_COMPARE(rmdev_test_uint_t)
+static DEF_COMPARE(double)
+
+    /* clang-format on */

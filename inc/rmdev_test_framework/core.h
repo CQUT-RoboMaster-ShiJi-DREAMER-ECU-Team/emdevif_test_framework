@@ -278,21 +278,31 @@ void rmdev_test_run_test_suit(rmdev_test_TestSuit* test_suit);
         rmdev_test_run_test_suit(&rmdev___test_suit);                                                  \
     } while (0)
 
+const rmdev_test_CompareMsg* rmdev_test_strEqual(rmdev_test_CompareMsg* msg,
+                                                 rmdev_test_CheckType check_type,
+                                                 const char* lhs,
+                                                 const char* rhs);
+const rmdev_test_CompareMsg* rmdev_test_intCompare(rmdev_test_CompareMsg* msg,
+                                                   rmdev_test_CheckType check_type,
+                                                   rmdev_test_CompareType compare_type,
+                                                   int lhs,
+                                                   int rhs);
+const rmdev_test_CompareMsg* rmdev_test_uintCompare(rmdev_test_CompareMsg* msg,
+                                                    rmdev_test_CheckType check_type,
+                                                    rmdev_test_CompareType compare_type,
+                                                    unsigned int lhs,
+                                                    unsigned int rhs);
+const rmdev_test_CompareMsg* rmdev_test_floatPointCompare(rmdev_test_CompareMsg* msg,
+                                                          rmdev_test_CheckType check_type,
+                                                          rmdev_test_CompareType compare_type,
+                                                          double lhs,
+                                                          double rhs);
 const rmdev_test_CompareMsg* rmdev_test_checkTure(rmdev_test_CompareMsg* msg,
                                                   rmdev_test_CheckType check_type,
                                                   rmdev_test_bool_t result);
 const rmdev_test_CompareMsg* rmdev_test_checkFalse(rmdev_test_CompareMsg* msg,
                                                    rmdev_test_CheckType check_type,
                                                    rmdev_test_bool_t result);
-const rmdev_test_CompareMsg* rmdev_test_intCompare(rmdev_test_CompareMsg* msg,
-                                                   rmdev_test_CheckType check_type,
-                                                   rmdev_test_CompareType compare_type,
-                                                   int lhs,
-                                                   int rhs);
-const rmdev_test_CompareMsg* rmdev_test_strEqual(rmdev_test_CompareMsg* msg,
-                                                 rmdev_test_CheckType check_type,
-                                                 const char* lhs,
-                                                 const char* rhs);
 void rmdev_test_assertFailEntry(void);
 
 #define RMDEV_TEST_MESSAGE(format, ...)                                 \
