@@ -1,4 +1,4 @@
-..................F
+....................................F
 Test suit "TrueFalseTest" expect "true": Case "ExpectFail" failed at __FILE__:__LINE__:
 lhs: expected
     true
@@ -49,7 +49,13 @@ lhs: 2
     2 (0x2)
 rhs: 9
     9 (0x9)
-.F
+F
+Test suit "TrueFalseTest" expect "<": Case "ExpectFail" failed at __FILE__:__LINE__:
+lhs: 9
+    9 (0x9)
+rhs: 0
+    0 (0)
+F
 Test suit "TrueFalseTest" expect "<": Case "ExpectFail" failed at __FILE__:__LINE__:
 lhs: -9
     -9 (0xfffffff7)
@@ -63,11 +69,95 @@ rhs: 0
     0 (0)
 F
 Test suit "TrueFalseTest" expect "==": Case "ExpectFail" failed at __FILE__:__LINE__:
+lhs: 2
+    2 (0x2)
+rhs: 3
+    3 (0x3)
+F
+Test suit "TrueFalseTest" expect ">": Case "ExpectFail" failed at __FILE__:__LINE__:
+lhs: 1
+    1 (0x1)
+rhs: 45
+    45 (0x2d)
+F
+Test suit "TrueFalseTest" expect ">": Case "ExpectFail" failed at __FILE__:__LINE__:
+lhs: 45
+    45 (0x2d)
+rhs: 45
+    45 (0x2d)
+F
+Test suit "TrueFalseTest" expect "!=": Case "ExpectFail" failed at __FILE__:__LINE__:
+lhs: 1
+    1 (0x1)
+rhs: 1
+    1 (0x1)
+F
+Test suit "TrueFalseTest" expect ">=": Case "ExpectFail" failed at __FILE__:__LINE__:
+lhs: 2
+    2 (0x2)
+rhs: 9
+    9 (0x9)
+F
+Test suit "TrueFalseTest" expect "<": Case "ExpectFail" failed at __FILE__:__LINE__:
+lhs: 90
+    90 (0x5a)
+rhs: 10
+    10 (0xa)
+F
+Test suit "TrueFalseTest" expect "<": Case "ExpectFail" failed at __FILE__:__LINE__:
+lhs: 10
+    10 (0xa)
+rhs: 10
+    10 (0xa)
+F
+Test suit "TrueFalseTest" expect "<=": Case "ExpectFail" failed at __FILE__:__LINE__:
+lhs: 17458388
+    17458388 (0x10a64d4)
+rhs: 3540
+    3540 (0xdd4)
+F
+Test suit "TrueFalseTest" expect "==": Case "ExpectFail" failed at __FILE__:__LINE__:
 lhs: str_arr
     Hello, World!
 rhs: "dsuighr"
     dsuighr
 str_arr is: Hello, World!
+F
+Test suit "TrueFalseTest" expect "==": Case "ExpectFail" failed at __FILE__:__LINE__:
+lhs: 3.0
+    3.000000
+rhs: 3.001
+    3.001000
+F
+Test suit "TrueFalseTest" expect ">": Case "ExpectFail" failed at __FILE__:__LINE__:
+lhs: -235.326
+    -235.326000
+rhs: -4.5
+    -4.500000
+F
+Test suit "TrueFalseTest" expect "!=": Case "ExpectFail" failed at __FILE__:__LINE__:
+lhs: 1.0
+    1.000000
+rhs: 1.000001
+    1.000001
+F
+Test suit "TrueFalseTest" expect ">=": Case "ExpectFail" failed at __FILE__:__LINE__:
+lhs: -2.1
+    -2.100000
+rhs: 2.0
+    2.000000
+F
+Test suit "TrueFalseTest" expect "<": Case "ExpectFail" failed at __FILE__:__LINE__:
+lhs: -9.1
+    -9.100000
+rhs: -9.1
+    -9.100000
+F
+Test suit "TrueFalseTest" expect "<=": Case "ExpectFail" failed at __FILE__:__LINE__:
+lhs: 1.0
+    1.000000
+rhs: 0.0
+    0.000000
 ....F
 Test suit "ExternalTest" expect "true": Case "ExternalTestCase" failed at __FILE__:__LINE__:
 lhs: expected

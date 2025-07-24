@@ -41,12 +41,42 @@ TEST_SUIT(SuccessTest)
     }
     TEST_CASE_END();
 
+    TEST_CASE_BEGIN(UIntCompare)
+    {
+        UINT_EXPECT_EQ(3, 3);
+        UINT_EXPECT_GT(235326, 45);
+        UINT_EXPECT_NE(1, 2);
+        UINT_EXPECT_GE(20, 9);
+        UINT_EXPECT_GE(2, 2);
+        UINT_EXPECT_LT(9, 10);
+        UINT_EXPECT_LE(1, 3540);
+        UINT_EXPECT_LE(114514, 114514);
+
+        RMDEV_TEST_UINT_ASSERT_EQ(1, 1, "");
+    }
+    TEST_CASE_END();
+
     TEST_CASE_BEGIN(StringEq)
     {
         EXPECT_STREQ("fwsg", "fwsg");
 
         const char* str1 = "Hfhueiwsgb";
         EXPECT_STREQ("Hfhueiwsgb", str1);
+    }
+    TEST_CASE_END();
+
+    TEST_CASE_BEGIN(FloatPointCompare)
+    {
+        FP_EXPECT_EQ(3.0, 3.0000001);
+        FP_EXPECT_GT(235.326, -4.5);
+        FP_EXPECT_NE(1.0, 1.001);
+        FP_EXPECT_GE(2.1, 2.0);
+        FP_EXPECT_GE(2.0, 2.0);
+        FP_EXPECT_LT(-9.1, -9.0);
+        FP_EXPECT_LE(-1.0, -0.0);
+        FP_EXPECT_LE(-114.514, -114.514);
+
+        RMDEV_TEST_FP_ASSERT_EQ(1.0, 1.0, "");
     }
     TEST_CASE_END();
 }
@@ -73,12 +103,28 @@ TEST_SUIT(TrueFalseTest)
         INT_EXPECT_GT(-235326, -235326);
         INT_EXPECT_NE(2, 2);
         INT_EXPECT_GE(2, 9);
-        INT_EXPECT_LT(-9, 0);
+        INT_EXPECT_LT(9, 0);
         INT_EXPECT_LT(-9, -9);
         INT_EXPECT_LE(1, 0);
 
+        UINT_EXPECT_EQ(2, 3);
+        UINT_EXPECT_GT(1, 45);
+        UINT_EXPECT_GT(45, 45);
+        UINT_EXPECT_NE(1, 1);
+        UINT_EXPECT_GE(2, 9);
+        UINT_EXPECT_LT(90, 10);
+        UINT_EXPECT_LT(10, 10);
+        UINT_EXPECT_LE(17458388, 3540);
+
         char str_arr[] = "Hello, World!";
         EXPECT_STREQ(str_arr, "dsuighr")->MESSAGE("str_arr is: %s", str_arr);
+
+        FP_EXPECT_EQ(3.0, 3.001);
+        FP_EXPECT_GT(-235.326, -4.5);
+        FP_EXPECT_NE(1.0, 1.000001);
+        FP_EXPECT_GE(-2.1, 2.0);
+        FP_EXPECT_LT(-9.1, -9.1);
+        FP_EXPECT_LE(1.0, 0.0);
     }
     TEST_CASE_END();
 }
