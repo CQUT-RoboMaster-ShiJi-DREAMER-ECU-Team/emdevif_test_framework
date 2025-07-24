@@ -1,35 +1,130 @@
 # rmdev_test_framework
 
-一个纯 C
-语言，适用于单片机开发的简易测试框架。也是 [rmdev](https://github.com/CQUT-RoboMaster-ShiJi-DREAMER-ECU-Team/rmdev)
+一个纯 C 语言，适用于嵌入式平台的简易测试框架。也是 [rmdev](https://github.com/CQUT-RoboMaster-ShiJi-DREAMER-ECU-Team/rmdev)
 的一个子项目。
 
-## 使用方法
+## 特点
 
-### 依赖
+* 纯C语言实现
+* 依赖项少，对嵌入式平台友好
+* 支持通过注册钩子函数以获取测试信息，或者与其他测试框架关联
 
-CMake 3.10 或更高版本。
+## 构建
 
-### 安装框架
+首先使用 `git clone` 或 `git submodule add`（推荐）将此仓库添加到你的仓库中。
 
-#### 方法1
+### 使用 CMake 构建
 
-直接将仓库文件下载到本地，然后通过 `add_subdirectory()` 函数将其添加到 CMakeLists.txt 中。
+通过 `add_subdirectory()` 函数将其添加到 CMakeLists.txt 中：
+```CMake
+add_subdirectory(
+    # path to rmdev_test_framework
+)
 
-#### 方法2
+target_link_libraries(
+    # your project name
+    # PUBLIC / PRIVATE / INTERFACE
+    rmdev_test_framework
+)
+```
+即可将库链接到你的工程中。
 
-使用 FetchContent（暂时不要，因为目前是私有库，不方便指定链接）
+### 其他构建系统
 
-#### 方法3（不使用 CMake 也可以）
+将仓库内的 `inc` 与 `src` 内的文件分别添加到编译器的头文件和源文件中编译即可。
 
-将仓库内的 `inc` 与 `src` 内的文件分别添加到编译器的头文件和源文件选项中编译即可。
+## 使用方式
 
-### 使用步骤
+* 一个简单的示例：
+```C
+#include <stdio.h>
+#include "rmdev_test_framework.h"  // required
 
-1. 将 `rmdev_test_framework.h` 头文件包含到主函数所在的文件中。
-2. 在测试代码的主函数中调用 `rmdev_test_framework_main()` 函数。相关参数可参考阅读函数的注释，或者参考本项目的测试代码示例。
+void myPrintf(const char* format, ...)
+{
+    va_list args;
+    va_start(args, format);
 
-## 额外功能
+    vprintf(format, args);
 
-* 预定义宏 `RMDEV_TEST_DO_NOT_PRINT_PASSED_TEST` 可用于控制是否输出测试通过的测试样例。
-  默认为 `0`，表示会输出测试样例通过的信息。将这个宏定义为 `1` 后，将不会输出测试样例通过的信息，只会输出未通过的测试样例的信息。
+    va_end(args);
+}
+
+TEST_SUIT(MyTestSuit)
+{
+    TEST_CASE_BEGIN(TestCase1)
+    {
+        EXPECT_TRUE(1 == 1)->MESSAGE("If failed, it will print.");
+        EXPECT_FALSE(114514 == 1919810)->MESSAGE("Support %s", "format in printf style.");
+        EXPECT_FALSE(67978 == 0);
+        ASSERT_TRUE(1 == 1, "Assert macros must add message here. If failed, it will print and stop test");
+        ASSERT_TRUE(2 != 1, "Support %s", "format in printf style too.");
+    }
+    TEST_CASE_END();
+
+    TEST_CASE_BEGIN(TestCase2)
+    {
+        INT_EXPECT_EQ(3, 3);
+        INT_EXPECT_GT(235326, -45);
+        INT_EXPECT_NE(1, 2);
+        INT_EXPECT_GE(2, -9);
+        INT_EXPECT_GE(2, 2);
+        INT_EXPECT_LT(-9, 0);
+        INT_EXPECT_LE(-1, 0);
+        INT_EXPECT_LE(-114514, -114514);
+
+        INT_ASSERT_EQ(1, 1, "");
+        
+        UINT_EXPECT_EQ(1234U, 1234U);
+        FP_EXPECT_EQ(123.456, 123.456);
+    }
+    TEST_CASE_END();
+    // you can add more cases...
+}
+
+static void testEntry(void)
+{
+    RUN_SUIT(MyTestSuit);
+}
+
+int main(void)
+{
+    const rmdev_test_Callbacks callback = {.printfCallback = myPrintf,
+                                           .testEntryCallback = testEntry,
+                                           .testFinishCallback = testFinishHandler};
+
+    rmdev_test_framework_main("\n", &callback, NULL);
+
+    return 0;
+}
+```
+
+* 支持多文件：
+```C
+// external.c
+
+#include "rmdev_test_framework.h"
+
+TEST_SUIT(ExternalSuit)
+{
+    TEST_CASE_BEGIN(TestCase1)
+    {
+        EXPECT_TRUE(1 == 1);
+    }
+    TEST_CASE_END();
+}
+```
+```C
+// main.c
+
+#include "rmdev_test_framework.h"
+
+TEST_SUIT(ExternalSuit);  // similar to declare a function
+
+static void testEntry(void)
+{
+    RUN_SUIT(ExternalSuit);
+}
+```
+
+* 支持测试夹具。使用方式参考[集成测试](./test/integration_test/classic_test/external_test.c)中的 FixtureTest。
