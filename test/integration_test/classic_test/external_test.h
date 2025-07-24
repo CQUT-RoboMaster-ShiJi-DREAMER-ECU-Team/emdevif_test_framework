@@ -11,17 +11,14 @@
 
 #include "rmdev_test_framework-with_prefix.h"
 
-typedef struct FixtureTest {
-    rmdev_test_TestFixture fixture;
-
-    int a;
-} FixtureTest;
+typedef struct FixtureTest FixtureTest;
 
 extern FixtureTest fixture_test;
 
-extern void FixtureTest_Constructor(FixtureTest* this_);
+void FixtureTest_Constructor(FixtureTest* this_);
+int FixtureTest_getA(const FixtureTest* this_);
 
-extern RMDEV_TEST_TEST_SUIT(ExternalTest);
-extern RMDEV_TEST_TEST_SUIT(FixtureTest);
+RMDEV_TEST_TEST_SUIT(ExternalTest);
+RMDEV_TEST_TEST_SUIT(FixtureTest);
 
 #endif  // !EXTERNAL_TEST_H

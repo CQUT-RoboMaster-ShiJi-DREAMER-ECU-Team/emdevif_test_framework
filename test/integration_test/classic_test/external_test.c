@@ -9,6 +9,12 @@
 
 #include "rmdev_test_framework-with_prefix.h"
 
+struct FixtureTest {
+    rmdev_test_TestFixture fixture;
+
+    int a;
+};
+
 static void fixture_setUp(rmdev_test_TestFixture* this_)
 {
     FixtureTest* const self = (FixtureTest*)this_;
@@ -21,6 +27,12 @@ static void fixture_tearDown(rmdev_test_TestFixture* this_)
     FixtureTest* const self = (FixtureTest*)this_;
 
     self->a = -9631014;
+}
+
+// 仅供验证 tearDown 是否被执行使用
+int FixtureTest_getA(const FixtureTest* this_)
+{
+    return this_->a;
 }
 
 FixtureTest fixture_test;

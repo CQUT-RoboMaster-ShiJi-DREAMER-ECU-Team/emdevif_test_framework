@@ -137,8 +137,8 @@ void testApiUsage(void)
 
     FixtureTest_Constructor(&fixture_test);
     RUN_SUIT_F(FixtureTest, &fixture_test);
-    if (fixture_test.a != -9631014) {
-        printf("FixtureTest failed: a = %d\n", fixture_test.a);
+    if (FixtureTest_getA(&fixture_test) != -9631014) {
+        printf("FixtureTest failed: a = %d\n", FixtureTest_getA(&fixture_test));
     }
 }
 
