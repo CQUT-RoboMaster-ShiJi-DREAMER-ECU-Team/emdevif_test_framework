@@ -16,7 +16,6 @@ rmdev_test_ErrorCode rmdev_test_error_code = RMDEV_TEST_NO_ERROR;    ///< 测试
 const char* rmdev_test___line_break_character___ = RMDEV_TEST_NULL;  ///< 换行符
 
 rmdev_test_printfCallback rmdev_test___printfCallback___ = RMDEV_TEST_NULL;
-static rmdev_test_delayCallback delayCallback_ = RMDEV_TEST_NULL;
 static rmdev_test_testEntryCallback testEntryCallback_ = RMDEV_TEST_NULL;
 static rmdev_test_testFinishCallback testFinishCallback_ = RMDEV_TEST_NULL;
 static rmdev_test_errorCallback errorCallback_ = RMDEV_TEST_NULL;
@@ -463,7 +462,6 @@ void rmdev_test_framework_main(const char* line_break,
     rmdev_test___line_break_character___ = line_break;
 
     rmdev_test___printfCallback___ = callback->printfCallback;
-    delayCallback_ = callback->delayCallback;
     testEntryCallback_ = callback->testEntryCallback;
     testFinishCallback_ = callback->testFinishCallback;
     errorCallback_ = callback->errorCallback;
@@ -478,12 +476,6 @@ void rmdev_test_framework_main(const char* line_break,
     }
     if (rmdev_test___printfCallback___ == RMDEV_TEST_NULL) {
         rmdev_test_error_code = RMDEV_TEST_NO_PRINTF_CALLBACK;
-        errorCallback_(rmdev_test_error_code);
-    }
-    if (delayCallback_ == RMDEV_TEST_NULL) {
-        rmdev_test_error_code = RMDEV_TEST_NO_DELAY_CALLBACK;
-        rmdev_test___printfCallback___("rmdev_test_framework Init error: No delay callback function set!%s",
-                                       rmdev_test___line_break_character___);
         errorCallback_(rmdev_test_error_code);
     }
     if (testEntryCallback_ == RMDEV_TEST_NULL) {
@@ -528,7 +520,6 @@ static void rmdev_test_deinit(void)
     rmdev_test___line_break_character___ = RMDEV_TEST_NULL;
 
     rmdev_test___printfCallback___ = RMDEV_TEST_NULL;
-    delayCallback_ = RMDEV_TEST_NULL;
     testEntryCallback_ = RMDEV_TEST_NULL;
     testFinishCallback_ = RMDEV_TEST_NULL;
     errorCallback_ = RMDEV_TEST_NULL;

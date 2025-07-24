@@ -25,9 +25,7 @@ static void my_printf(const char* format, ...)
     va_end(args);
 }
 
-static void testEntry(void)
-{
-}
+static void testEntry(void) {}
 
 static void testFinishHandler(const rmdev_test_ErrorCode error_code)
 {
@@ -39,7 +37,6 @@ int main(void)
     TestFunc_Init(&func, "no_suit_test.out");
 
     const rmdev_test_Callbacks cb = {.printfCallback = my_printf,
-                                     .delayCallback = delayImpl,
                                      .testEntryCallback = testEntry,
                                      .testFinishCallback = testFinishHandler};
 

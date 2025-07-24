@@ -47,10 +47,9 @@ typedef enum rmdev_test_ErrorCode {
     RMDEV_TEST_NO_ERROR = 0,                 ///< 无错误
     RMDEV_TEST_NO_BREAK_CHARACTER = -1,      ///< 没有设置换行符
     RMDEV_TEST_NO_PRINTF_CALLBACK = -2,      ///< 没有设置 printf 回调函数
-    RMDEV_TEST_NO_DELAY_CALLBACK = -3,       ///< 没有设置 delay 回调函数
-    RMDEV_TEST_NO_TEST_ENTRY_CALLBACK = -4,  ///< 没有设置 testEntry 回调函数
-    RMDEV_TEST_TEST_SUIT_COUNT_ERROR = -5,   ///< 测试项计数与成功、错误的项目计数不匹配
-    RMDEV_TEST_OTHER_ERROR = -6              ///< 其他错误
+    RMDEV_TEST_NO_TEST_ENTRY_CALLBACK = -3,  ///< 没有设置 testEntry 回调函数
+    RMDEV_TEST_TEST_SUIT_COUNT_ERROR = -4,   ///< 测试项计数与成功、错误的项目计数不匹配
+    RMDEV_TEST_OTHER_ERROR = -5              ///< 其他错误
 } rmdev_test_ErrorCode;
 
 /**
@@ -59,12 +58,6 @@ typedef enum rmdev_test_ErrorCode {
  * @param ... 可变参数列表
  */
 typedef void (*rmdev_test_printfCallback)(const char* format, ...);
-
-/**
- * rmdev 测试框架 延时回调函数类型
- * @param ms 毫秒数
- */
-typedef void (*rmdev_test_delayCallback)(unsigned int ms);
 
 /**
  * rmdev 测试框架 测试入口回调函数类型
@@ -88,7 +81,6 @@ typedef void (*rmdev_test_errorCallback)(rmdev_test_ErrorCode error_code);
  */
 typedef struct rmdev_test_Callbacks {
     rmdev_test_printfCallback printfCallback;          ///< 格式化输出回调函数
-    rmdev_test_delayCallback delayCallback;            ///< 延时回调函数
     rmdev_test_testEntryCallback testEntryCallback;    ///< 测试入口回调函数
 
     rmdev_test_testFinishCallback testFinishCallback;  ///< 测试结束（正常退出）回调函数

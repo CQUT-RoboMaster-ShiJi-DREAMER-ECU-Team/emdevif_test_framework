@@ -85,7 +85,6 @@ int main(void)
     TestFunc_Init(&func, "assert_test.out");
 
     const rmdev_test_Callbacks cb = {.printfCallback = my_printf,
-                                     .delayCallback = delayImpl,
                                      .testEntryCallback = testEntry,
                                      .testFinishCallback = testFinishHandler};
 

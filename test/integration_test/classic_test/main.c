@@ -152,7 +152,6 @@ int main(void)
     openFile();
 
     const rmdev_test_Callbacks cb = {.printfCallback = my_printf,
-                                     .delayCallback = my_delay,
                                      .testEntryCallback = testApiUsage,
                                      .testFinishCallback = testFinishHandler};
 

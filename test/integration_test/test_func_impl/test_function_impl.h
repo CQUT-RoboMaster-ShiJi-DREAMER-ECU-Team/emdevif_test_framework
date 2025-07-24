@@ -11,7 +11,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 
 typedef struct TestFunc {
     FILE* file;
@@ -30,11 +29,6 @@ static inline void TestFunc_End(TestFunc* self)
 {
     fclose(self->file);
     self->file = NULL;
-}
-
-static void delayImpl(const unsigned int ms)
-{
-    sleep(ms);
 }
 
 #endif  // !TEST_FUNCTION_IMPL_H

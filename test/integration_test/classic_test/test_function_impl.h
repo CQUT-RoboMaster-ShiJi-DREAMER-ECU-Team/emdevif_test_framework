@@ -7,7 +7,6 @@
 
 #pragma once
 
-void my_delay(unsigned int ms);
 void my_printf(const char* format, ...);
 
 void openFile(void);

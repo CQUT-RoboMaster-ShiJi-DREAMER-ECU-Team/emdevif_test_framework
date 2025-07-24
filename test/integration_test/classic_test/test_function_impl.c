@@ -9,14 +9,9 @@
 
 #include <stdio.h>
 #include <stdarg.h>
-#include <unistd.h>  // For sleep function
+#include <stdlib.h>
 
 static FILE* file = NULL;
-
-void my_delay(const unsigned int ms)
-{
-    sleep(ms);
-}
 
 void my_printf(const char* format, ...)
 {
