@@ -1,3 +1,7 @@
+cmake_minimum_required(VERSION 3.28)
+
+project(rmdev_test_framework_test)
+
 if (DEFINED RMDEV_TEST_FRAMEWORK_TEST_NAME)
     if (RMDEV_TEST_FRAMEWORK_TEST_NAME STREQUAL "integration_test")
         add_subdirectory(integration_test)
