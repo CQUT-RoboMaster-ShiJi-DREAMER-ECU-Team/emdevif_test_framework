@@ -1,8 +1,6 @@
 if (DEFINED RMDEV_TEST_FRAMEWORK_TEST_NAME)
     if (RMDEV_TEST_FRAMEWORK_TEST_NAME STREQUAL "integration_test")
         add_subdirectory(integration_test)
-    elseif (RMDEV_TEST_FRAMEWORK_TEST_NAME STREQUAL "stm32f407ighx")
-        add_subdirectory(stm32f407ighx)
     else ()
         message(WARNING "Unsupported platform for test of rmdev_test_framework: ${RMDEV_TEST_FRAMEWORK_TEST_NAME}. Skipping.")
 
