@@ -247,28 +247,41 @@ void rmdev_test_run_test_suit(rmdev_test_TestSuit* test_suit);
     }                                                                          \
     while (0)
 
-#define RMDEV_TEST_RUN_SUIT(test_suit)                                                \
-    do {                                                                              \
-        rmdev_test_TestSuit rmdev___test_suit = {.name = #test_suit,                  \
-                                                 .body = rmdev_test__##test_suit##__, \
-                                                 .fixture = RMDEV_TEST_NULL,          \
-                                                 .total_count = 0,                    \
-                                                 .success_count = 0,                  \
-                                                 .fail_count = 0};                    \
-        rmdev_test_run_test_suit(&rmdev___test_suit);                                 \
+#define RMDEV_TEST_RUN_SUIT(test_suit)                \
+    do {                                              \
+        rmdev_test_TestSuit rmdev___test_suit = {     \
+            .name = #test_suit,                       \
+            .fixture = RMDEV_TEST_NULL,               \
+            .total_count = 0,                         \
+            .success_count = 0,                       \
+            .fail_count = 0,                          \
+            .body = rmdev_test__##test_suit##__,      \
+        };                                            \
+        rmdev_test_run_test_suit(&rmdev___test_suit); \
     } while (0)
 
 #define RMDEV_TEST_RUN_SUIT_F(test_suit, test_fixture_instance)                                        \
     do {                                                                                               \
         rmdev_test_TestFixture* rmdev_test___fixture = (rmdev_test_TestFixture*)test_fixture_instance; \
-        rmdev_test_TestSuit rmdev___test_suit = {.name = #test_suit,                                   \
-                                                 .body = rmdev_test__##test_suit##__,                  \
-                                                 .fixture = rmdev_test___fixture,                      \
-                                                 .total_count = 0,                                     \
-                                                 .success_count = 0,                                   \
-                                                 .fail_count = 0};                                     \
+        rmdev_test_TestSuit rmdev___test_suit = {                                                      \
+            .name = #test_suit,                                                                        \
+            .body = rmdev_test__##test_suit##__,                                                       \
+            .total_count = 0,                                                                          \
+            .success_count = 0,                                                                        \
+            .fail_count = 0,                                                                           \
+            .fixture = rmdev_test___fixture,                                                           \
+        };                                                                                             \
         rmdev_test_run_test_suit(&rmdev___test_suit);                                                  \
     } while (0)
+
+#ifdef __cplusplus
+
+/**
+ * 如果要在 C++ lambda 表达式中运行测试，需要在捕获列表中传入这个宏
+ */
+#define RMDEV_TEST_LAMBDA_CAPTURE &rmdev___msg, &rmdev___case_name, &rmdev___suit
+
+#endif
 
 const rmdev_test_CompareMsg* rmdev_test_strEqual(rmdev_test_CompareMsg* msg,
                                                  rmdev_test_CheckType check_type,
