@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#include "rmdev_test_framework-no_prefix.h"
+#include "rmdev_test_framework.h"
 
 #include "test_function_impl.h"
 

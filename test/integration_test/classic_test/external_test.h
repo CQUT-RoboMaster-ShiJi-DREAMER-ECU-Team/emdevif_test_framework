@@ -9,7 +9,7 @@
 #ifndef EXTERNAL_TEST_H
 #define EXTERNAL_TEST_H
 
-#include "rmdev_test_framework.h"
+#include "rmdev_test_framework-with_prefix.h"
 
 typedef struct FixtureTest {
     rmdev_test_TestFixture fixture;

@@ -1,20 +1,53 @@
 /**
  * @file rmdev_test_framework.h
- * @author 杜以成
- * @date 2025-06-03
- * @brief rmdev 测试框架
+ * @author DuYicheng
+ * @date 2025-07-19
+ * @brief 不带前缀的 rmdev 测试框架头文件
  */
 
 #pragma once
 #ifndef RMDEV_TEST_FRAMEWORK_H
 #define RMDEV_TEST_FRAMEWORK_H
 
-#include "rmdev_test_framework/core.h"
+#include "rmdev_test_framework-with_prefix.h"
 
-#include "rmdev_test_framework/check_bool_macro.h"
-#include "rmdev_test_framework/check_int_macro.h"
-#include "rmdev_test_framework/check_uint_macro.h"
-#include "rmdev_test_framework/check_str_macro.h"
-#include "rmdev_test_framework/check_float_point_macro.h"
+#define TEST_SUIT       RMDEV_TEST_TEST_SUIT
 
-#endif  // RMDEV_TEST_FRAMEWORK_H
+#define TEST_CASE_BEGIN RMDEV_TEST_TEST_CASE_BEGIN
+#define TEST_CASE_END   RMDEV_TEST_TEST_CASE_END
+
+#define RUN_SUIT        RMDEV_TEST_RUN_SUIT
+#define RUN_SUIT_F      RMDEV_TEST_RUN_SUIT_F
+
+#define EXPECT_TRUE     RMDEV_TEST_EXPECT_TRUE
+#define EXPECT_FALSE    RMDEV_TEST_EXPECT_FALSE
+#define ASSERT_TRUE     RMDEV_TEST_ASSERT_TRUE
+#define ASSERT_FALSE    RMDEV_TEST_ASSERT_FALSE
+
+#define INT_EXPECT_EQ   RMDEV_TEST_INT_EXPECT_EQ
+#define INT_EXPECT_NE   RMDEV_TEST_INT_EXPECT_NE
+#define INT_EXPECT_GT   RMDEV_TEST_INT_EXPECT_GT
+#define INT_EXPECT_LT   RMDEV_TEST_INT_EXPECT_LT
+#define INT_EXPECT_GE   RMDEV_TEST_INT_EXPECT_GE
+#define INT_EXPECT_LE   RMDEV_TEST_INT_EXPECT_LE
+
+#define UINT_EXPECT_EQ  RMDEV_TEST_UINT_EXPECT_EQ
+#define UINT_EXPECT_NE  RMDEV_TEST_UINT_EXPECT_NE
+#define UINT_EXPECT_GT  RMDEV_TEST_UINT_EXPECT_GT
+#define UINT_EXPECT_LT  RMDEV_TEST_UINT_EXPECT_LT
+#define UINT_EXPECT_GE  RMDEV_TEST_UINT_EXPECT_GE
+#define UINT_EXPECT_LE  RMDEV_TEST_UINT_EXPECT_LE
+
+#define EXPECT_STREQ    RMDEV_TEST_EXPECT_STREQ
+#define ASSERT_STREQ    RMDEV_TEST_ASSERT_STREQ
+
+#define FP_EXPECT_EQ    RMDEV_TEST_FP_EXPECT_EQ
+#define FP_EXPECT_NE    RMDEV_TEST_FP_EXPECT_NE
+#define FP_EXPECT_GT    RMDEV_TEST_FP_EXPECT_GT
+#define FP_EXPECT_LT    RMDEV_TEST_FP_EXPECT_LT
+#define FP_EXPECT_GE    RMDEV_TEST_FP_EXPECT_GE
+#define FP_EXPECT_LE    RMDEV_TEST_FP_EXPECT_LE
+
+#define MESSAGE         RMDEV_TEST_MESSAGE
+
+#endif  // !RMDEV_TEST_FRAMEWORK_H

@@ -14,7 +14,7 @@
 
 #include "main.h"
 #include "usart.h"
-#include "rmdev_test_framework.h"
+#include "rmdev_test_framework-with_prefix.h"
 
 static void serialPrint(const char* buffer, const uint16_t size)
 {

@@ -7,7 +7,7 @@
 
 #include "external_test.h"
 
-#include "rmdev_test_framework.h"
+#include "rmdev_test_framework-with_prefix.h"
 
 static void fixture_setUp(rmdev_test_TestFixture* this_)
 {
