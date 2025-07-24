@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.27)
 
 project(rmdev_test_framework C)
 
@@ -9,10 +9,9 @@ target_include_directories(${PROJECT_NAME}
         inc/
 )
 
-file(GLOB_RECURSE RMDEV_TEST_FRAMEWORK_PUBLIC_SOURCES "src/*.c")
 target_sources(${PROJECT_NAME}
     INTERFACE
-        ${RMDEV_TEST_FRAMEWORK_PUBLIC_SOURCES}
+        src/rmdev_test_framework.c
 )
 
 # 将宏 RMDEV_TEST_FRAMEWORK_ENABLE_TEST 设置为 ON 即启用测试
