@@ -90,8 +90,8 @@ static void testEntry(void)
 int main(void)
 {
     const emdevif_test_Callbacks callback = {.printfCallback = myPrintf,
-                                           .testEntryCallback = testEntry,
-                                           .testFinishCallback = testFinishHandler};
+                                             .testEntryCallback = testEntry,
+                                             .testFinishCallback = testFinishHandler};
 
     emdevif_test_framework_main("\n", &callback, NULL);
 
@@ -128,3 +128,28 @@ static void testEntry(void)
 ```
 
 * 支持测试夹具。使用方式参考[集成测试](./test/integration_test/classic_test/external_test.c)中的 FixtureTest。
+
+## 自定义配置
+
+### 预定义宏
+
+您可以通过预定义宏以配置 emdevif 的一些属性。
+
+| 预定义宏                            | 预定义宏的值的类型 | 预定义宏的含义                                             |
+|---------------------------------|-----------|-----------------------------------------------------|
+| EMDEVIF_TEST_VALUE_BUFFER_SIZE  | size_t    | 存储 ASSERT 与 EXPECT 宏的数值的字符串长度，默认为 64。               |
+| EMDEVIF_TEST_FLOAT_EQUAL_ERROR  | double    | 浮点数等于判定的误差值，即两个浮点类型数据之差的绝对值小于这个值即认为它们相等，默认为 0.0001。 |
+
+使用 CMake 预定义宏的示例：
+```CMake
+add_subdirectory(
+    # path to emdevif_test_framework
+)
+target_compile_definitions(emdevif_test_framework INTERFACE EMDEVIF_TEST_VALUE_BUFFER_SIZE=128)  # example about how to set macro EMDEVIF_TEST_VALUE_BUFFER_SIZE to 128
+
+target_link_libraries(
+    # your project name
+    # PUBLIC / PRIVATE / INTERFACE
+    emdevif_test_framework
+)
+```

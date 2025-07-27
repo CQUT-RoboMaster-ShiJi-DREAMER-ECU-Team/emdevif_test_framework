@@ -27,7 +27,7 @@ static int test_suit_success_count = 0;  ///< 成功计数
 static int test_suit_fail_count = 0;     ///< 失败计数
 
 #ifndef EMDEVIF_TEST_VALUE_BUFFER_SIZE
-#define EMDEVIF_TEST_VALUE_BUFFER_SIZE 128
+#define EMDEVIF_TEST_VALUE_BUFFER_SIZE 64
 #endif
 
 static char lhs_buffer[EMDEVIF_TEST_VALUE_BUFFER_SIZE], rhs_buffer[EMDEVIF_TEST_VALUE_BUFFER_SIZE];
@@ -144,10 +144,8 @@ const emdevif_test_CompareMsg* emdevif_test_strEqual(emdevif_test_CompareMsg* co
                                                      const char* const lhs,
                                                      const char* const rhs)
 {
-    sprintf(lhs_buffer, "%s", lhs);
-    sprintf(rhs_buffer, "%s", rhs);
-    msg->lhs_value = lhs_buffer;
-    msg->rhs_value = rhs_buffer;
+    msg->lhs_value = lhs;
+    msg->rhs_value = rhs;
 
     setCompareName(msg, EMDEVIF_TEST_COMPARE_EQUAL);
 
