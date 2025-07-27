@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "rmdev_test_framework.h"
+#include "emdevif_test_framework.h"
 
 #include "test_function_impl.h"
 #include "external_test.h"
@@ -18,7 +18,7 @@ TEST_SUIT(SuccessTest)
 {
     TEST_CASE_BEGIN(a)
     {
-        EXPECT_TRUE(1 == 1)->RMDEV_TEST_MESSAGE("1 should be equal to 1!");
+        EXPECT_TRUE(1 == 1)->EMDEVIF_TEST_MESSAGE("1 should be equal to 1!");
         EXPECT_FALSE(114514 == 1919810);
         EXPECT_FALSE(67978 == 0);
         ASSERT_TRUE(1 == 1, "1 should be equal to 1!");
@@ -37,7 +37,7 @@ TEST_SUIT(SuccessTest)
         INT_EXPECT_LE(-1, 0);
         INT_EXPECT_LE(-114514, -114514);
 
-        RMDEV_TEST_INT_ASSERT_EQ(1, 1, "");
+        EMDEVIF_TEST_INT_ASSERT_EQ(1, 1, "");
     }
     TEST_CASE_END();
 
@@ -52,7 +52,7 @@ TEST_SUIT(SuccessTest)
         UINT_EXPECT_LE(1, 3540);
         UINT_EXPECT_LE(114514, 114514);
 
-        RMDEV_TEST_UINT_ASSERT_EQ(1, 1, "");
+        EMDEVIF_TEST_UINT_ASSERT_EQ(1, 1, "");
     }
     TEST_CASE_END();
 
@@ -76,7 +76,7 @@ TEST_SUIT(SuccessTest)
         FP_EXPECT_LE(-1.0, -0.0);
         FP_EXPECT_LE(-114.514, -114.514);
 
-        RMDEV_TEST_FP_ASSERT_EQ(1.0, 1.0, "");
+        EMDEVIF_TEST_FP_ASSERT_EQ(1.0, 1.0, "");
     }
     TEST_CASE_END();
 }
@@ -142,20 +142,20 @@ void testApiUsage(void)
     }
 }
 
-static void testFinishHandler(const rmdev_test_ErrorCode error_code)
+static void testFinishHandler(const emdevif_test_ErrorCode error_code)
 {
-    exit((error_code == RMDEV_TEST_EXIST_FAIL ? 0 : 1));
+    exit((error_code == EMDEVIF_TEST_EXIST_FAIL ? 0 : 1));
 }
 
 int main(void)
 {
     openFile();
 
-    const rmdev_test_Callbacks cb = {.printfCallback = my_printf,
-                                     .testEntryCallback = testApiUsage,
-                                     .testFinishCallback = testFinishHandler};
+    const emdevif_test_Callbacks cb = {.printfCallback = my_printf,
+                                       .testEntryCallback = testApiUsage,
+                                       .testFinishCallback = testFinishHandler};
 
-    rmdev_test_framework_main("\n", &cb, NULL);
+    emdevif_test_framework_main("\n", &cb, NULL);
 
     closeFile();
 

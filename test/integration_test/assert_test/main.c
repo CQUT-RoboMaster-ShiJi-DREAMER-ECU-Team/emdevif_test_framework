@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#include "rmdev_test_framework.h"
+#include "emdevif_test_framework.h"
 
 #include "test_function_impl.h"
 
@@ -30,7 +30,7 @@ TEST_SUIT(SuccessTest)
 {
     TEST_CASE_BEGIN(a)
     {
-        EXPECT_TRUE(1 == 1)->RMDEV_TEST_MESSAGE("1 should be equal to 1!");
+        EXPECT_TRUE(1 == 1)->EMDEVIF_TEST_MESSAGE("1 should be equal to 1!");
         EXPECT_FALSE(114514 == 1919810);
         EXPECT_FALSE(67978 == 0);
         ASSERT_TRUE(1 == 1, "1 should be equal to 1!");
@@ -75,20 +75,20 @@ static void testEntry(void)
     RUN_SUIT(TrueTest);
 }
 
-static void testFinishHandler(const rmdev_test_ErrorCode error_code)
+static void testFinishHandler(const emdevif_test_ErrorCode error_code)
 {
-    exit((error_code == RMDEV_TEST_EXIST_FAIL ? 0 : 1));
+    exit((error_code == EMDEVIF_TEST_EXIST_FAIL ? 0 : 1));
 }
 
 int main(void)
 {
     TestFunc_Init(&func, "assert_test.out");
 
-    const rmdev_test_Callbacks cb = {.printfCallback = my_printf,
-                                     .testEntryCallback = testEntry,
-                                     .testFinishCallback = testFinishHandler};
+    const emdevif_test_Callbacks cb = {.printfCallback = my_printf,
+                                       .testEntryCallback = testEntry,
+                                       .testFinishCallback = testFinishHandler};
 
-    rmdev_test_framework_main("\n", &cb, NULL);
+    emdevif_test_framework_main("\n", &cb, NULL);
 
     TestFunc_End(&func);
 

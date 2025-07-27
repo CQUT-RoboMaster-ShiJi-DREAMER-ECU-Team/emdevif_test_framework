@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.28)
 
-project(rmdev_test_framework_test)
+project(emdevif_test_framework_test)
 
-if (DEFINED RMDEV_TEST_FRAMEWORK_TEST_NAME)
-    if (RMDEV_TEST_FRAMEWORK_TEST_NAME STREQUAL "integration_test")
+if (DEFINED EMDEVIF_TEST_FRAMEWORK_TEST_NAME)
+    if (EMDEVIF_TEST_FRAMEWORK_TEST_NAME STREQUAL "integration_test")
         add_subdirectory(integration_test)
     else ()
-        message(WARNING "Unsupported platform for test of rmdev_test_framework: ${RMDEV_TEST_FRAMEWORK_TEST_NAME}. Skipping.")
+        message(WARNING "Unsupported platform for test of emdevif_test_framework: ${EMDEVIF_TEST_FRAMEWORK_TEST_NAME}. Skipping.")
 
-        unset(RMDEV_TEST_FRAMEWORK_TEST_NAME)
+        unset(EMDEVIF_TEST_FRAMEWORK_TEST_NAME)
     endif ()
 else ()
-    message(WARNING "RMDEV_TEST_FRAMEWORK_TEST_NAME is not defined, so test of rmdev_test_framework skipped. Please set it to a valid platform (e.g., windows or STM32F407).")
+    message(WARNING "EMDEVIF_TEST_FRAMEWORK_TEST_NAME is not defined, so test of emdevif_test_framework skipped. Please set it to a valid platform (e.g., integration_test).")
 endif ()

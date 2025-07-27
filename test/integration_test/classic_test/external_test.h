@@ -9,7 +9,7 @@
 #ifndef EXTERNAL_TEST_H
 #define EXTERNAL_TEST_H
 
-#include "rmdev_test_framework-with_prefix.h"
+#include "emdevif_test_framework-with_prefix.h"
 
 typedef struct FixtureTest FixtureTest;
 
@@ -18,7 +18,7 @@ extern FixtureTest fixture_test;
 void FixtureTest_Constructor(FixtureTest* this_);
 int FixtureTest_getA(const FixtureTest* this_);
 
-RMDEV_TEST_TEST_SUIT(ExternalTest);
-RMDEV_TEST_TEST_SUIT(FixtureTest);
+EMDEVIF_TEST_TEST_SUIT(ExternalTest);
+EMDEVIF_TEST_TEST_SUIT(FixtureTest);
 
 #endif  // !EXTERNAL_TEST_H

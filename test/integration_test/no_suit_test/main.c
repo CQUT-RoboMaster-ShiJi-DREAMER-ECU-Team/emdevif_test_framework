@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#include "rmdev_test_framework.h"
+#include "emdevif_test_framework.h"
 
 #include "test_function_impl.h"
 
@@ -27,20 +27,20 @@ static void my_printf(const char* format, ...)
 
 static void testEntry(void) {}
 
-static void testFinishHandler(const rmdev_test_ErrorCode error_code)
+static void testFinishHandler(const emdevif_test_ErrorCode error_code)
 {
-    exit((error_code == RMDEV_TEST_ALL_PASSED ? 0 : 1));
+    exit((error_code == EMDEVIF_TEST_ALL_PASSED ? 0 : 1));
 }
 
 int main(void)
 {
     TestFunc_Init(&func, "no_suit_test.out");
 
-    const rmdev_test_Callbacks cb = {.printfCallback = my_printf,
-                                     .testEntryCallback = testEntry,
-                                     .testFinishCallback = testFinishHandler};
+    const emdevif_test_Callbacks cb = {.printfCallback = my_printf,
+                                       .testEntryCallback = testEntry,
+                                       .testFinishCallback = testFinishHandler};
 
-    rmdev_test_framework_main("\n", &cb, NULL);
+    emdevif_test_framework_main("\n", &cb, NULL);
 
     TestFunc_End(&func);
 

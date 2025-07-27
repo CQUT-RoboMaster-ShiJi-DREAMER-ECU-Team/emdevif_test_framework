@@ -1,6 +1,6 @@
-# rmdev_test_framework
+# emdevif_test_framework
 
-一个纯 C 语言，适用于嵌入式平台的简易测试框架。也是 [rmdev](https://github.com/CQUT-RoboMaster-ShiJi-DREAMER-ECU-Team/rmdev)
+一个纯 C 语言，适用于嵌入式平台的简易测试框架。也是 [emdevif](https://github.com/CQUT-RoboMaster-ShiJi-DREAMER-ECU-Team/emdevif)
 的一个子项目。
 
 ## 特点
@@ -18,13 +18,13 @@
 通过 `add_subdirectory()` 函数将其添加到 CMakeLists.txt 中：
 ```CMake
 add_subdirectory(
-    # path to rmdev_test_framework
+    # path to emdevif_test_framework
 )
 
 target_link_libraries(
     # your project name
     # PUBLIC / PRIVATE / INTERFACE
-    rmdev_test_framework
+    emdevif_test_framework
 )
 ```
 即可将库链接到你的工程中。
@@ -38,7 +38,7 @@ target_link_libraries(
 * 一个简单的示例：
 ```C
 #include <stdio.h>
-#include "rmdev_test_framework.h"  // required
+#include "emdevif_test_framework.h"  // required
 
 void myPrintf(const char* format, ...)
 {
@@ -89,11 +89,11 @@ static void testEntry(void)
 
 int main(void)
 {
-    const rmdev_test_Callbacks callback = {.printfCallback = myPrintf,
+    const emdevif_test_Callbacks callback = {.printfCallback = myPrintf,
                                            .testEntryCallback = testEntry,
                                            .testFinishCallback = testFinishHandler};
 
-    rmdev_test_framework_main("\n", &callback, NULL);
+    emdevif_test_framework_main("\n", &callback, NULL);
 
     return 0;
 }
@@ -103,7 +103,7 @@ int main(void)
 ```C
 // external.c
 
-#include "rmdev_test_framework.h"
+#include "emdevif_test_framework.h"
 
 TEST_SUIT(ExternalSuit)
 {
@@ -117,7 +117,7 @@ TEST_SUIT(ExternalSuit)
 ```C
 // main.c
 
-#include "rmdev_test_framework.h"
+#include "emdevif_test_framework.h"
 
 TEST_SUIT(ExternalSuit);  // similar to declare a function
 
