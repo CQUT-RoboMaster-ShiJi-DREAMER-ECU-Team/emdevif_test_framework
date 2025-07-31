@@ -68,4 +68,6 @@
 
 #define MESSAGE         EMDEVIF_TEST_MESSAGE
 
+#define TEST_LOG        EMDEVIF_TEST_TEST_LOG
+
 #endif  // !EMDEVIF_TEST_FRAMEWORK_H
