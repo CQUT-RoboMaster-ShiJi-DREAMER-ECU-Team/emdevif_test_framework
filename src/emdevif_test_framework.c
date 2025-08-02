@@ -375,7 +375,11 @@ void emdevif_test_run_test_suit(emdevif_test_TestSuit* test_suit)
 
     EMDEVIF_TEST__RUN_HOOK(emdevif_test___hooks___.testSuitBeginHook, test_suit);
 
+    emdevif_test___printfCallback___("* Running suit \"%s\" ", test_suit->name);
+
     test_suit->body(test_suit);
+
+    emdevif_test___printfCallback___("%s", emdevif_test___line_break_character___);
 
     EMDEVIF_TEST__RUN_HOOK(emdevif_test___hooks___.testSuitEndHook, test_suit);
 
