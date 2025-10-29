@@ -1,4 +1,5 @@
-....................................F
+* Running suit "SuccessTest" ..................................
+* Running suit "TrueFalseTest" ..F
 Test suit "TrueFalseTest" expect "true": Case "ExpectFail" failed at __FILE__:__LINE__:
 lhs: expected
     true
@@ -158,7 +159,8 @@ lhs: 1.0
     1.000000
 rhs: 0.0
     0.000000
-....F
+
+* Running suit "ExternalTest" ....F
 Test suit "ExternalTest" expect "true": Case "ExternalTestCase" failed at __FILE__:__LINE__:
 lhs: expected
     false
@@ -171,7 +173,9 @@ lhs: expected
 rhs: 67978 != 0
     true
 67978 should not be equal to 0!
-.
+
+* Running suit "FixtureTest" .
+
 Test Finished.
 
     4 Test suit(s) finished: 2 Succeeded, 2 Failed.

@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.27)
 
 project(emdevif_test_framework C)
 
+option(EMDEVIF_TEST_FRAMEWORK_ENABLE_TEST "Enabled it to enable test for emdevif_test_framework" OFF)
+
 add_library(${PROJECT_NAME} STATIC)
 
 target_include_directories(${PROJECT_NAME} PUBLIC inc/)

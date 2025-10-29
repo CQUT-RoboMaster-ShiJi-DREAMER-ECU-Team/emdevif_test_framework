@@ -1,4 +1,5 @@
-.......F
+* Running suit "SuccessTest" .....
+* Running suit "AssertFailTest" ..F
 Test suit "AssertFailTest" assert "true": Case "a" failed at __FILE__:__LINE__:
 lhs: expected
     true
