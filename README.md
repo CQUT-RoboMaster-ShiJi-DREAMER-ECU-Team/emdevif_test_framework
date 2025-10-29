@@ -1,7 +1,7 @@
 # emdevif_test_framework
 
 一个纯 C 语言，适用于嵌入式平台的简易测试框架。也是 [emdevif](https://github.com/CQUT-RoboMaster-ShiJi-DREAMER-ECU-Team/emdevif)
-的一个子项目。
+的一个子项目（不依赖 emdevif，可以独立运行）。
 
 ## 特点
 
@@ -31,7 +31,7 @@ target_link_libraries(
 
 ### 其他构建系统
 
-将仓库内的 `inc` 与 `src` 内的文件分别添加到编译器的头文件和源文件中编译即可。
+将仓库内的 `inc` 与 `src` 内的文件分别添加到编译器的头文件路径和源文件中编译即可（头文件仅需添加 `inc` 路径，子路径无需增加）。
 
 ## 使用方式
 
