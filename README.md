@@ -29,6 +29,17 @@ target_link_libraries(
 ```
 即可将库链接到你的工程中。
 
+### 使用 XMake 构建
+
+```Lua
+includes("<path to emdevif_test_framework>")
+
+target("<your target>", function ()
+    add_deps("emdevif_test_framework")
+    -- ...
+end)
+```
+
 ### 其他构建系统
 
 将仓库内的 `inc` 与 `src` 内的文件分别添加到编译器的头文件路径和源文件中编译即可（头文件仅需添加 `inc` 路径，子路径无需增加）。
