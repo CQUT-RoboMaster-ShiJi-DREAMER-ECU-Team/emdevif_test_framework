@@ -86,9 +86,9 @@ typedef struct emdevif_test_Callbacks {
     emdevif_test_testFinishCallback testFinishCallback;  ///< 测试结束（正常退出）回调函数
                                                          ///< @note 这个函数指针可以传入 @c NULL
                                                          ///< 以表示使用默认的结束方式：进入一个无限空循环
-    emdevif_test_errorCallback errorCallback;  ///< 错误处理回调函数
-                                               ///< @note 这个函数指针可以传入 @c NULL
-                                               ///< 以表示使用默认的错误处理方式：进入一个无限空循环
+    emdevif_test_errorCallback errorCallback;            ///< 错误处理回调函数
+                                                         ///< @note 这个函数指针可以传入 @c NULL
+                                                         ///< 以表示使用默认的错误处理方式：进入一个无限空循环
 } emdevif_test_Callbacks;
 
 /**
@@ -224,6 +224,18 @@ void emdevif_test_TestFixture_Constructor(void* this_,
                                           void (*tearDown)(emdevif_test_TestFixture* this_));
 void emdevif_test_run_test_suit(emdevif_test_TestSuit* test_suit);
 
+// 由于 C 语言有复合字面量（compound_literal），但 ISO C++ 不支持这个特性。
+// 因此使用宏，根据环境自动选择结构体赋值的方式
+#ifndef __cplusplus
+#define EMDEVIF_TEST_ASSIGNMENT_COMPOUND_LITERAL(var, type, ...) \
+    var = (type)                                                 \
+    {                                                            \
+        __VA_ARGS__                                              \
+    }
+#else
+#define EMDEVIF_TEST_ASSIGNMENT_COMPOUND_LITERAL(var, type, ...) var = {__VA_ARGS__}
+#endif
+
 #define EMDEVIF_TEST_TEST_SUIT(test_suit) void emdevif_test__##test_suit##__(emdevif_test_TestSuit* emdevif___suit)
 
 #define EMDEVIF_TEST_TEST_CASE_BEGIN(case_name)                                                                    \
@@ -249,30 +261,30 @@ void emdevif_test_run_test_suit(emdevif_test_TestSuit* test_suit);
     }                                                                                                        \
     while (0)
 
-#define EMDEVIF_TEST_RUN_SUIT(test_suit)                         \
-    do {                                                         \
-        emdevif_current_test_suit_ = (emdevif_test_TestSuit){    \
-            .name = #test_suit,                                  \
-            .fixture = EMDEVIF_TEST_NULL,                        \
-            .total_count = 0,                                    \
-            .success_count = 0,                                  \
-            .fail_count = 0,                                     \
-            .body = emdevif_test__##test_suit##__,               \
-        };                                                       \
-        emdevif_test_run_test_suit(&emdevif_current_test_suit_); \
+#define EMDEVIF_TEST_RUN_SUIT(test_suit)                                         \
+    do {                                                                         \
+        EMDEVIF_TEST_ASSIGNMENT_COMPOUND_LITERAL(emdevif_current_test_suit_,     \
+                                                 emdevif_test_TestSuit,          \
+                                                 #test_suit,                     \
+                                                 EMDEVIF_TEST_NULL,              \
+                                                 0,                              \
+                                                 0,                              \
+                                                 0,                              \
+                                                 emdevif_test__##test_suit##__); \
+        emdevif_test_run_test_suit(&emdevif_current_test_suit_);                 \
     } while (0)
 
 #define EMDEVIF_TEST_RUN_SUIT_F(test_suit, test_fixture_instance)                                            \
     do {                                                                                                     \
         emdevif_test_TestFixture* emdevif_test___fixture = (emdevif_test_TestFixture*)test_fixture_instance; \
-        emdevif_current_test_suit_ = (emdevif_test_TestSuit){                                                \
-            .name = #test_suit,                                                                              \
-            .body = emdevif_test__##test_suit##__,                                                           \
-            .total_count = 0,                                                                                \
-            .success_count = 0,                                                                              \
-            .fail_count = 0,                                                                                 \
-            .fixture = emdevif_test___fixture,                                                               \
-        };                                                                                                   \
+        EMDEVIF_TEST_ASSIGNMENT_COMPOUND_LITERAL(emdevif_current_test_suit_,                                 \
+                                                 emdevif_test_TestSuit,                                      \
+                                                 #test_suit,                                                 \
+                                                 emdevif_test___fixture,                                     \
+                                                 0,                                                          \
+                                                 0,                                                          \
+                                                 0,                                                          \
+                                                 emdevif_test__##test_suit##__);                             \
         emdevif_test_run_test_suit(&emdevif_current_test_suit_);                                             \
     } while (0)
 
@@ -281,7 +293,7 @@ void emdevif_test_run_test_suit(emdevif_test_TestSuit* test_suit);
 /**
  * 如果要在 C++ lambda 表达式中运行测试，需要在捕获列表中传入这个宏
  */
-#define EMDEVIF_TEST_LAMBDA_CAPTURE &emdevif___msg, &emdevif___case_name, &emdevif___suit
+#define EMDEVIF_TEST_LAMBDA_CAPTURE &emdevif___case_name, &emdevif___suit
 
 #endif
 

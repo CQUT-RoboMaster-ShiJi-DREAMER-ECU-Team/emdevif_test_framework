@@ -6,6 +6,12 @@ set(CMAKE_C_STANDARD 11)
 
 find_package(Python3 REQUIRED)
 
+if (MSVC)
+    target_compile_options(emdevif_test_framework PUBLIC /W4 /source-charset:utf-8)
+else ()
+    target_compile_options(emdevif_test_framework PUBLIC -Wpedantic)
+endif ()
+
 add_subdirectory(test_func_impl)
 
 function(runTest test_name)
@@ -34,3 +40,4 @@ runTest(classic_test)
 runTest(assert_test)
 runTest(no_suit_test)
 runTest(no_case_test)
+runTest(cpp_test)

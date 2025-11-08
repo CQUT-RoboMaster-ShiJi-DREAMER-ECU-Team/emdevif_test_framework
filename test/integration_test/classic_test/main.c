@@ -129,6 +129,80 @@ TEST_SUIT(TrueFalseTest)
     TEST_CASE_END();
 }
 
+TEST_SUIT(AllApiUsageTest)
+{
+    TEST_CASE_BEGIN(TrueFalse)
+    {
+        EXPECT_TRUE(true);
+        EXPECT_FALSE(false);
+
+        ASSERT_TRUE(true, "");
+        ASSERT_FALSE(false, "");
+    }
+    TEST_CASE_END();
+
+    TEST_CASE_BEGIN(Int)
+    {
+        INT_EXPECT_EQ(1, 1);
+        INT_EXPECT_NE(1, -1);
+        INT_EXPECT_GT(1, -1);
+        INT_EXPECT_LT(-1, 1);
+        INT_EXPECT_GE(1, -1);
+        INT_EXPECT_LE(-1, -1);
+
+        INT_ASSERT_EQ(1, 1, "");
+        INT_ASSERT_NE(1, -1, "");
+        INT_ASSERT_GT(1, -1, "");
+        INT_ASSERT_LT(-1, 1, "");
+        INT_ASSERT_GE(1, -1, "");
+        INT_ASSERT_LE(-1, -1, "");
+    }
+    TEST_CASE_END();
+
+    TEST_CASE_BEGIN(UInt)
+    {
+        UINT_EXPECT_EQ(2, 2);
+        UINT_EXPECT_NE(2, 5);
+        UINT_EXPECT_GT(6, 5);
+        UINT_EXPECT_LT(2, 5);
+        UINT_EXPECT_GE(6, 5);
+        UINT_EXPECT_LE(2, 5);
+
+        UINT_ASSERT_EQ(2, 2, "");
+        UINT_ASSERT_NE(2, 5, "");
+        UINT_ASSERT_GT(6, 5, "");
+        UINT_ASSERT_LT(2, 5, "");
+        UINT_ASSERT_GE(6, 5, "");
+        UINT_ASSERT_LE(2, 5, "");
+    }
+    TEST_CASE_END();
+
+    TEST_CASE_BEGIN(String)
+    {
+        EXPECT_STREQ("asdfghjkl", "asdfghjkl");
+        ASSERT_STREQ("asdfghjkl", "asdfghjkl", "");
+    }
+    TEST_CASE_END();
+
+    TEST_CASE_BEGIN(UInt)
+    {
+        FP_EXPECT_EQ(1.0f, 1.0f);
+        FP_EXPECT_NE(1.0f, 3.0f);
+        FP_EXPECT_GT(4.0f, 3.0f);
+        FP_EXPECT_LT(1.0f, 3.0f);
+        FP_EXPECT_GE(4.0f, 3.0f);
+        FP_EXPECT_LE(1.0f, 3.0f);
+
+        FP_ASSERT_EQ(1.0f, 1.0f, "");
+        FP_ASSERT_NE(1.0f, 3.0f, "");
+        FP_ASSERT_GT(4.0f, 3.0f, "");
+        FP_ASSERT_LT(1.0f, 3.0f, "");
+        FP_ASSERT_GE(4.0f, 3.0f, "");
+        FP_ASSERT_LE(1.0f, 3.0f, "");
+    }
+    TEST_CASE_END();
+}
+
 void testApiUsage(void)
 {
     RUN_SUIT(SuccessTest);
