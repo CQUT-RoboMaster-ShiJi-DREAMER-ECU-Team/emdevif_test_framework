@@ -38,6 +38,9 @@ static char lhs_buffer[EMDEVIF_TEST_VALUE_BUFFER_SIZE], rhs_buffer[EMDEVIF_TEST_
  */
 emdevif_test_Hooks emdevif_test___hooks___;
 
+emdevif_test_TestSuit emdevif_current_test_suit_;               ///< 当前运行的测试套件
+emdevif_test_CompareMsg emdevif_current_test_compare_message_;  ///< 当前运行的测试的比较信息
+
 #ifndef EMDEVIF_TEST_FLOAT_EQUAL_ERROR
 #define EMDEVIF_TEST_FLOAT_EQUAL_ERROR 0.0001
 #endif

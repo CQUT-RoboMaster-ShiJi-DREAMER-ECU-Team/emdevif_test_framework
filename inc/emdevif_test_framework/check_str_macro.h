@@ -14,7 +14,7 @@
 
 #define EMDEVIF_TEST_EXPECT_STREQ(lhs, rhs)     \
     (EMDEVIF_TEST__COMPARE_SET_VALUE(lhs, rhs), \
-     emdevif_test_strEqual(&emdevif___msg, EMDEVIF_TEST_CHECK_TYPE_EXPECT, lhs, rhs))
+     emdevif_test_strEqual(&emdevif_current_test_compare_message_, EMDEVIF_TEST_CHECK_TYPE_EXPECT, lhs, rhs))
 
 #define EMDEVIF_TEST_ASSERT_STREQ(lhs, rhs, format, ...)         \
     do {                                                         \

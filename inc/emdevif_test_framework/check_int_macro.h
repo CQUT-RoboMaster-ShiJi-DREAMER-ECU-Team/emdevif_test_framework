@@ -12,48 +12,52 @@
 #include "emdevif_test_framework/core.h"
 #include "emdevif_test_framework/compare_auxiliary_macro.h"
 
-#define EMDEVIF_TEST_INT_EXPECT_EQ(lhs, rhs)    \
-    (EMDEVIF_TEST__COMPARE_SET_VALUE(lhs, rhs), \
-     emdevif_test_intCompare(&emdevif___msg, EMDEVIF_TEST_CHECK_TYPE_EXPECT, EMDEVIF_TEST_COMPARE_EQUAL, lhs, rhs))
-
-#define EMDEVIF_TEST_INT_EXPECT_NE(lhs, rhs)                 \
-    (EMDEVIF_TEST__COMPARE_SET_VALUE(lhs, rhs),              \
-     emdevif_test_intCompare(&emdevif___msg,                 \
-                             EMDEVIF_TEST_CHECK_TYPE_EXPECT, \
-                             EMDEVIF_TEST_COMPARE_NOT_EQUAL, \
-                             lhs,                            \
+#define EMDEVIF_TEST_INT_EXPECT_EQ(lhs, rhs)                         \
+    (EMDEVIF_TEST__COMPARE_SET_VALUE(lhs, rhs),                      \
+     emdevif_test_intCompare(&emdevif_current_test_compare_message_, \
+                             EMDEVIF_TEST_CHECK_TYPE_EXPECT,         \
+                             EMDEVIF_TEST_COMPARE_EQUAL,             \
+                             lhs,                                    \
                              rhs))
 
-#define EMDEVIF_TEST_INT_EXPECT_GT(lhs, rhs)                    \
-    (EMDEVIF_TEST__COMPARE_SET_VALUE(lhs, rhs),                 \
-     emdevif_test_intCompare(&emdevif___msg,                    \
-                             EMDEVIF_TEST_CHECK_TYPE_EXPECT,    \
-                             EMDEVIF_TEST_COMPARE_GREATER_THAN, \
-                             lhs,                               \
+#define EMDEVIF_TEST_INT_EXPECT_NE(lhs, rhs)                         \
+    (EMDEVIF_TEST__COMPARE_SET_VALUE(lhs, rhs),                      \
+     emdevif_test_intCompare(&emdevif_current_test_compare_message_, \
+                             EMDEVIF_TEST_CHECK_TYPE_EXPECT,         \
+                             EMDEVIF_TEST_COMPARE_NOT_EQUAL,         \
+                             lhs,                                    \
                              rhs))
 
-#define EMDEVIF_TEST_INT_EXPECT_LT(lhs, rhs)                 \
-    (EMDEVIF_TEST__COMPARE_SET_VALUE(lhs, rhs),              \
-     emdevif_test_intCompare(&emdevif___msg,                 \
-                             EMDEVIF_TEST_CHECK_TYPE_EXPECT, \
-                             EMDEVIF_TEST_COMPARE_LESS_THAN, \
-                             lhs,                            \
+#define EMDEVIF_TEST_INT_EXPECT_GT(lhs, rhs)                         \
+    (EMDEVIF_TEST__COMPARE_SET_VALUE(lhs, rhs),                      \
+     emdevif_test_intCompare(&emdevif_current_test_compare_message_, \
+                             EMDEVIF_TEST_CHECK_TYPE_EXPECT,         \
+                             EMDEVIF_TEST_COMPARE_GREATER_THAN,      \
+                             lhs,                                    \
                              rhs))
 
-#define EMDEVIF_TEST_INT_EXPECT_GE(lhs, rhs)                     \
-    (EMDEVIF_TEST__COMPARE_SET_VALUE(lhs, rhs),                  \
-     emdevif_test_intCompare(&emdevif___msg,                     \
-                             EMDEVIF_TEST_CHECK_TYPE_EXPECT,     \
-                             EMDEVIF_TEST_COMPARE_GREATER_EQUAL, \
-                             lhs,                                \
+#define EMDEVIF_TEST_INT_EXPECT_LT(lhs, rhs)                         \
+    (EMDEVIF_TEST__COMPARE_SET_VALUE(lhs, rhs),                      \
+     emdevif_test_intCompare(&emdevif_current_test_compare_message_, \
+                             EMDEVIF_TEST_CHECK_TYPE_EXPECT,         \
+                             EMDEVIF_TEST_COMPARE_LESS_THAN,         \
+                             lhs,                                    \
                              rhs))
 
-#define EMDEVIF_TEST_INT_EXPECT_LE(lhs, rhs)                  \
-    (EMDEVIF_TEST__COMPARE_SET_VALUE(lhs, rhs),               \
-     emdevif_test_intCompare(&emdevif___msg,                  \
-                             EMDEVIF_TEST_CHECK_TYPE_EXPECT,  \
-                             EMDEVIF_TEST_COMPARE_LESS_EQUAL, \
-                             lhs,                             \
+#define EMDEVIF_TEST_INT_EXPECT_GE(lhs, rhs)                         \
+    (EMDEVIF_TEST__COMPARE_SET_VALUE(lhs, rhs),                      \
+     emdevif_test_intCompare(&emdevif_current_test_compare_message_, \
+                             EMDEVIF_TEST_CHECK_TYPE_EXPECT,         \
+                             EMDEVIF_TEST_COMPARE_GREATER_EQUAL,     \
+                             lhs,                                    \
+                             rhs))
+
+#define EMDEVIF_TEST_INT_EXPECT_LE(lhs, rhs)                         \
+    (EMDEVIF_TEST__COMPARE_SET_VALUE(lhs, rhs),                      \
+     emdevif_test_intCompare(&emdevif_current_test_compare_message_, \
+                             EMDEVIF_TEST_CHECK_TYPE_EXPECT,         \
+                             EMDEVIF_TEST_COMPARE_LESS_EQUAL,        \
+                             lhs,                                    \
                              rhs))
 
 // ===========================================================================

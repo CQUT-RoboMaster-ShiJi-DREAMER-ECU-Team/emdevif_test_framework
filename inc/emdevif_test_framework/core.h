@@ -86,9 +86,9 @@ typedef struct emdevif_test_Callbacks {
     emdevif_test_testFinishCallback testFinishCallback;  ///< 测试结束（正常退出）回调函数
                                                          ///< @note 这个函数指针可以传入 @c NULL
                                                          ///< 以表示使用默认的结束方式：进入一个无限空循环
-    emdevif_test_errorCallback errorCallback;            ///< 错误处理回调函数
-                                                         ///< @note 这个函数指针可以传入 @c NULL
-                                                         ///< 以表示使用默认的错误处理方式：进入一个无限空循环
+    emdevif_test_errorCallback errorCallback;  ///< 错误处理回调函数
+                                               ///< @note 这个函数指针可以传入 @c NULL
+                                               ///< 以表示使用默认的错误处理方式：进入一个无限空循环
 } emdevif_test_Callbacks;
 
 /**
@@ -202,6 +202,9 @@ extern emdevif_test_printfCallback emdevif_test___printfCallback___;
 extern const char* emdevif_test___line_break_character___;
 extern emdevif_test_Hooks emdevif_test___hooks___;
 
+extern emdevif_test_TestSuit emdevif_current_test_suit_;
+extern emdevif_test_CompareMsg emdevif_current_test_compare_message_;
+
 /**
  * 执行钩子函数
  * @attention 由框架内部调用
@@ -223,47 +226,46 @@ void emdevif_test_run_test_suit(emdevif_test_TestSuit* test_suit);
 
 #define EMDEVIF_TEST_TEST_SUIT(test_suit) void emdevif_test__##test_suit##__(emdevif_test_TestSuit* emdevif___suit)
 
-#define EMDEVIF_TEST_TEST_CASE_BEGIN(case_name)                                            \
-    do {                                                                                   \
-        const char* emdevif___case_name = #case_name;                                      \
-        emdevif_test_CompareMsg emdevif___msg;                                             \
-                                                                                           \
-        EMDEVIF_TEST__RUN_HOOK(emdevif_test___hooks___.testCaseBeginHook, &emdevif___msg); \
-                                                                                           \
-        if (emdevif___suit->fixture != EMDEVIF_TEST_NULL) {                                \
-            if (emdevif___suit->fixture->setUp != EMDEVIF_TEST_NULL) {                     \
-                emdevif___suit->fixture->setUp(emdevif___suit->fixture);                   \
-            }                                                                              \
+#define EMDEVIF_TEST_TEST_CASE_BEGIN(case_name)                                                                    \
+    do {                                                                                                           \
+        const char* emdevif___case_name = #case_name;                                                              \
+                                                                                                                   \
+        EMDEVIF_TEST__RUN_HOOK(emdevif_test___hooks___.testCaseBeginHook, &emdevif_current_test_compare_message_); \
+                                                                                                                   \
+        if (emdevif___suit->fixture != EMDEVIF_TEST_NULL) {                                                        \
+            if (emdevif___suit->fixture->setUp != EMDEVIF_TEST_NULL) {                                             \
+                emdevif___suit->fixture->setUp(emdevif___suit->fixture);                                           \
+            }                                                                                                      \
         }
 
-#define EMDEVIF_TEST_TEST_CASE_END(void)                                             \
-    if (emdevif___suit->fixture != EMDEVIF_TEST_NULL) {                              \
-        if (emdevif___suit->fixture->tearDown != EMDEVIF_TEST_NULL) {                \
-            emdevif___suit->fixture->tearDown(emdevif___suit->fixture);              \
-        }                                                                            \
-    }                                                                                \
-                                                                                     \
-    EMDEVIF_TEST__RUN_HOOK(emdevif_test___hooks___.testCaseEndHook, &emdevif___msg); \
-    }                                                                                \
+#define EMDEVIF_TEST_TEST_CASE_END(void)                                                                     \
+    if (emdevif___suit->fixture != EMDEVIF_TEST_NULL) {                                                      \
+        if (emdevif___suit->fixture->tearDown != EMDEVIF_TEST_NULL) {                                        \
+            emdevif___suit->fixture->tearDown(emdevif___suit->fixture);                                      \
+        }                                                                                                    \
+    }                                                                                                        \
+                                                                                                             \
+    EMDEVIF_TEST__RUN_HOOK(emdevif_test___hooks___.testCaseEndHook, &emdevif_current_test_compare_message_); \
+    }                                                                                                        \
     while (0)
 
-#define EMDEVIF_TEST_RUN_SUIT(test_suit)                  \
-    do {                                                  \
-        emdevif_test_TestSuit emdevif___test_suit = {     \
-            .name = #test_suit,                           \
-            .fixture = EMDEVIF_TEST_NULL,                 \
-            .total_count = 0,                             \
-            .success_count = 0,                           \
-            .fail_count = 0,                              \
-            .body = emdevif_test__##test_suit##__,        \
-        };                                                \
-        emdevif_test_run_test_suit(&emdevif___test_suit); \
+#define EMDEVIF_TEST_RUN_SUIT(test_suit)                         \
+    do {                                                         \
+        emdevif_current_test_suit_ = (emdevif_test_TestSuit){    \
+            .name = #test_suit,                                  \
+            .fixture = EMDEVIF_TEST_NULL,                        \
+            .total_count = 0,                                    \
+            .success_count = 0,                                  \
+            .fail_count = 0,                                     \
+            .body = emdevif_test__##test_suit##__,               \
+        };                                                       \
+        emdevif_test_run_test_suit(&emdevif_current_test_suit_); \
     } while (0)
 
 #define EMDEVIF_TEST_RUN_SUIT_F(test_suit, test_fixture_instance)                                            \
     do {                                                                                                     \
         emdevif_test_TestFixture* emdevif_test___fixture = (emdevif_test_TestFixture*)test_fixture_instance; \
-        emdevif_test_TestSuit emdevif___test_suit = {                                                        \
+        emdevif_current_test_suit_ = (emdevif_test_TestSuit){                                                \
             .name = #test_suit,                                                                              \
             .body = emdevif_test__##test_suit##__,                                                           \
             .total_count = 0,                                                                                \
@@ -271,7 +273,7 @@ void emdevif_test_run_test_suit(emdevif_test_TestSuit* test_suit);
             .fail_count = 0,                                                                                 \
             .fixture = emdevif_test___fixture,                                                               \
         };                                                                                                   \
-        emdevif_test_run_test_suit(&emdevif___test_suit);                                                    \
+        emdevif_test_run_test_suit(&emdevif_current_test_suit_);                                             \
     } while (0)
 
 #ifdef __cplusplus
