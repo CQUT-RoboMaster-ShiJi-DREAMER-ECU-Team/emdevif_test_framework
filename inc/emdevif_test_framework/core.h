@@ -250,7 +250,7 @@ void emdevif_test_run_test_suit(emdevif_test_TestSuit* test_suit);
             }                                                                                                      \
         }
 
-#define EMDEVIF_TEST_TEST_CASE_END(void)                                                                     \
+#define EMDEVIF_TEST_TEST_CASE_END()                                                                         \
     if (emdevif___suit->fixture != EMDEVIF_TEST_NULL) {                                                      \
         if (emdevif___suit->fixture->tearDown != EMDEVIF_TEST_NULL) {                                        \
             emdevif___suit->fixture->tearDown(emdevif___suit->fixture);                                      \

@@ -53,8 +53,8 @@ static void emdevif_test_defaultErrorCallback(emdevif_test_ErrorCode error_code)
 static void emdevif_test_deinit(void);
 
 /// 结束的死循环
-#define END_LOOP(void) \
-    do {               \
+#define END_LOOP() \
+    do {           \
     } while (EMDEVIF_TEST_TRUE)
 
 #define DECL_COMPARE(Type) emdevif_test_bool_t compare_##Type(Type lhs, Type rhs, emdevif_test_CompareType compare_type)
