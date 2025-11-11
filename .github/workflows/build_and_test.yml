@@ -1,0 +1,21 @@
+name: build and test
+
+on:
+  push:
+    branches: ["main", "ci-test"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  ctest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: setup deps
+        run: sudo apt upgrade && sudo apt install build-essential cmake
+      - name: cmake
+        run: mkdir build && cmake -S . -B build -DEMDEVIF_TEST_FRAMEWORK_ENABLE_TEST=ON -DEMDEVIF_TEST_FRAMEWORK_TEST_NAME="integration_test"
+      - name: make
+        run: cmake --build build
+      - name: ctest
+        run: cd build && ctest .
