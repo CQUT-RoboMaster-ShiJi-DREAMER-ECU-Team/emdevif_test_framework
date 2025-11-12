@@ -1,21 +1,48 @@
-name: build and test
+name: Build And Test
 
 on:
   push:
-    branches: ["main", "ci-test"]
+    branches: ["main"]
   pull_request:
     branches: ["main"]
 
 jobs:
-  ctest:
+  on-ubuntu:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: setup deps
-        run: sudo apt upgrade && sudo apt install build-essential cmake
-      - name: cmake
-        run: mkdir build && cmake -S . -B build -DEMDEVIF_TEST_FRAMEWORK_ENABLE_TEST=ON -DEMDEVIF_TEST_FRAMEWORK_TEST_NAME="integration_test"
-      - name: make
-        run: cmake --build build
+
+      - name: Setup deps
+        run: sudo apt upgrade && sudo apt install build-essential cmake xmake && xmake update
+
+      - name: CMake config
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DEMDEVIF_TEST_FRAMEWORK_ENABLE_TEST=ON -DEMDEVIF_TEST_FRAMEWORK_TEST_NAME="integration_test" --debug-output
+      - name: CMake build
+        run: cmake --build build --verbose
       - name: ctest
-        run: cd build && ctest .
+        run: cd build && ctest . --verbose
+
+      - name: clean
+        run: rm -r build
+
+      - name: XMake config
+        run: xmake f -m release --EMDEVIF_TEST_FRAMEWORK_ENABLE_TEST=true --EMDEVIF_TEST_FRAMEWORK_TEST_NAME="integration_test" --verbose
+      - name: XMake build
+        run: xmake --build --verbose emdevif_test_framework_test
+      - name: XMake run test
+        run: xmake run emdevif_test_framework_test
+
+  on-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add MSVC to PATH
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: CMake config
+        run: cmake -G "Visual Studio 17 2022" -A x64 -S . -B build -DCMAKE_BUILD_TYPE=Release -DEMDEVIF_TEST_FRAMEWORK_ENABLE_TEST=ON -DEMDEVIF_TEST_FRAMEWORK_TEST_NAME="integration_test" --debug-output
+      - name: CMake build
+        run: cmake --build build --verbose --config Release
+      - name: ctest
+        run: cd build && ctest . --verbose -C release

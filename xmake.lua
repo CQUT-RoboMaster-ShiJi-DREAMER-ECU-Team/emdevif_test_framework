@@ -1,4 +1,4 @@
-set_xmakever("3.0.4")
+set_xmakever("3.0.0")
 
 target("emdevif_test_framework", function ()
     set_kind("static")

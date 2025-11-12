@@ -1,4 +1,4 @@
-set_xmakever("3.0.4")
+set_xmakever("3.0.0")
 
 option("EMDEVIF_TEST_FRAMEWORK_TEST_NAME", {description = "Select which test to run."})
 
@@ -8,10 +8,8 @@ target("emdevif_test_framework_test", function ()
 
     on_build(function (target) 
         if (has_config("EMDEVIF_TEST_FRAMEWORK_ENABLE_TEST")) then
-            os.cd("$(scriptdir)/..")
-            os.mkdir("$(builddir)/emdevif_xmake_test_out")
-
             import("core.project.config")
+
             local test_name = config.get("EMDEVIF_TEST_FRAMEWORK_TEST_NAME")
             local generator = config.get("trybuild") or ""
 
@@ -32,15 +30,25 @@ target("emdevif_test_framework_test", function ()
                     cygwin    = "Unix Makefiles"
                 }
                 generator = XMAKE_GENERATOR_TO_CMAKE[generator]
-                generator = " -G " .. generator
+                generator = " -G \"" .. generator .. "\""
             end
+
+            local target_name = target:name()
+            print("[" .. target_name .. "]: Generator command for CMake is \"" .. generator .. "\".")
+            local cmake_build_dir = "$(builddir)/emdevif_xmake_test_out"
+            print("[" .. target_name .. "]: CMake build dir is \"" .. cmake_build_dir .. "\".")
+            local script_dir = "$(scriptdir)"
+            print("[" .. target_name .. "]: Script dir is \"" .. script_dir .. "\".")
+
+            os.cd("$(scriptdir)/..")
+            os.mkdir(cmake_build_dir)
 
             os.exec("cmake -S ." .. generator .. " "
                 .. " -DEMDEVIF_TEST_FRAMEWORK_ENABLE_TEST=ON "
                 .. "-DEMDEVIF_TEST_FRAMEWORK_TEST_NAME=" .. test_name .. " "
-                .. "-B $(builddir)/emdevif_xmake_test_out"
+                .. "-B " .. cmake_build_dir
             )
-            os.exec("cmake --build $(builddir)/emdevif_xmake_test_out")
+            os.exec("cmake --build " .. cmake_build_dir)
         else
             os.raise("The value of EMDEVIF_TEST_FRAMEWORK_ENABLE_TEST was undefined, please set it.")
         end
