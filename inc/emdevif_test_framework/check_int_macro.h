@@ -1,7 +1,5 @@
 /**
  * @file check_int_macro.h
- * @author DuYicheng
- * @date 2025-07-22
  * @brief 检查 int 类型的宏
  */
 

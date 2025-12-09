@@ -1,7 +1,5 @@
 /**
  * @file test_function_impl.h
- * @author DuYicheng
- * @date 2025-07-21
  * @brief 测试函数的实现
  */
 

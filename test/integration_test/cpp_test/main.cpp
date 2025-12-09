@@ -1,7 +1,5 @@
 /**
  * @file main.cpp
- * @author 杜以成
- * @date 2025-11-08
  * @brief 测试框架的测试主函数
  */
 

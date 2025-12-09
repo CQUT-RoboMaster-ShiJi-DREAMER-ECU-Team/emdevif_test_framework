@@ -1,7 +1,5 @@
 /**
  * @file core.h
- * @author DuYicheng
- * @date 2025-07-22
  * @brief 核心声明
  */
 

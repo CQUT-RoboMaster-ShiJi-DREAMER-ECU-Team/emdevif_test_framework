@@ -1,7 +1,5 @@
 /**
  * @file external_test.c
- * @author DuYicheng
- * @date 2025-07-19
  * @brief 外部文件测试
  */
 

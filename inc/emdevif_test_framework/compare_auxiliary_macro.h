@@ -1,7 +1,5 @@
 /**
  * @file compare_auxiliary_macro.h
- * @author DuYicheng
- * @date 2025-07-22
  * @brief 比较检查宏的辅助宏
  */
 

@@ -1,7 +1,5 @@
 /**
  * @file emdevif_test_framework-with_prefix.h
- * @author 杜以成
- * @date 2025-06-03
  * @brief emdevif 测试框架
  */
 

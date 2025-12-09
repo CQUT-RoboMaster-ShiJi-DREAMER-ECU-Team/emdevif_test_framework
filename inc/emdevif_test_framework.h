@@ -1,7 +1,5 @@
 /**
  * @file emdevif_test_framework.h
- * @author DuYicheng
- * @date 2025-07-19
  * @brief 不带前缀的 emdevif 测试框架头文件
  */
 
