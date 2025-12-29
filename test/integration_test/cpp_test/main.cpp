@@ -154,14 +154,53 @@ TEST_SUIT(AllApiUsageTest)
     TEST_CASE_END();
 }
 
+TEST_SUIT(TestCaseContextTest)
+{
+    auto aTestFunc = [](emdevif_test_TestCaseContex* contex) {
+        RUN_TEST_CASE_WITHIN_CONTEX_BEGIN(contex)
+        {
+            INT_EXPECT_EQ(114, 114);
+            INT_EXPECT_EQ(514, 514);
+            INT_EXPECT_GE(1919, 810);
+
+            FP_EXPECT_EQ(214.623, -14.37);
+            INT_EXPECT_EQ(256, -14718)->MESSAGE("expect fail.");
+        }
+        RUN_TEST_CASE_WITHIN_CONTEX_END();
+    };
+
+    TEST_CASE_BEGIN(A)
+    {
+        EXPECT_TRUE(true);
+
+        emdevif_test_TestCaseContex contex = GET_THIS_TEST_CASE_CONTEXT();
+        aTestFunc(&contex);
+
+        EXPECT_FALSE(false);
+    }
+    TEST_CASE_END();
+
+    TEST_CASE_BEGIN(B)
+    {
+        EXPECT_FALSE(false);
+
+        emdevif_test_TestCaseContex contex = GET_THIS_TEST_CASE_CONTEXT();
+        aTestFunc(&contex);
+
+        EXPECT_TRUE(true);
+    }
+    TEST_CASE_END();
+}
+
 static void testEntry()
 {
     RUN_SUIT(AllApiUsageTest);
+    RUN_SUIT(TestCaseContextTest);
 }
 
 static void testFinishHandler(const emdevif_test_ErrorCode error_code)
 {
-    exit((error_code == EMDEVIF_TEST_ALL_PASSED ? 0 : 1));
+    exit((error_code == EMDEVIF_TEST_EXIST_FAIL ? 0 : 1));
 }
 
 int main()

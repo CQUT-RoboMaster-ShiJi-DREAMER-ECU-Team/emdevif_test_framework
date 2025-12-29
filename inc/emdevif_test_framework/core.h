@@ -230,8 +230,16 @@ void emdevif_test_run_test_suit(emdevif_test_TestSuit* test_suit);
     {                                                            \
         __VA_ARGS__                                              \
     }
+
+#define EMDEVIF_TEST_COMPONENT_LITERAL(type, ...) \
+    (type)                                        \
+    {                                             \
+        __VA_ARGS__                               \
+    }
 #else
 #define EMDEVIF_TEST_ASSIGNMENT_COMPOUND_LITERAL(var, type, ...) var = {__VA_ARGS__}
+
+#define EMDEVIF_TEST_COMPONENT_LITERAL(type, ...)                {__VA_ARGS__}
 #endif
 
 #define EMDEVIF_TEST_TEST_SUIT(test_suit) void emdevif_test__##test_suit##__(emdevif_test_TestSuit* emdevif___suit)
@@ -294,6 +302,23 @@ void emdevif_test_run_test_suit(emdevif_test_TestSuit* test_suit);
 #define EMDEVIF_TEST_LAMBDA_CAPTURE &emdevif___case_name, &emdevif___suit
 
 #endif
+
+typedef struct emdevif_test_TestCaseContex {
+    const char* case_name;
+} emdevif_test_TestCaseContex;
+
+#define EMDEVIF_TEST_GET_THIS_TEST_CASE_CONTEXT() \
+    EMDEVIF_TEST_COMPONENT_LITERAL(emdevif_test_TestCaseContex, emdevif___case_name)
+
+#define EMDEVIF_TEST_RUN_TEST_CASE_WITHIN_CONTEX_BEGIN(test_case_contex) \
+    do {                                                                 \
+        const char* emdevif___case_name = (test_case_contex)->case_name; \
+        do
+
+#define EMDEVIF_TEST_RUN_TEST_CASE_WITHIN_CONTEX_END() \
+    while (0);                                         \
+    }                                                  \
+    while (0)
 
 const emdevif_test_CompareMsg* emdevif_test_strEqual(emdevif_test_CompareMsg* msg,
                                                      emdevif_test_CheckType check_type,

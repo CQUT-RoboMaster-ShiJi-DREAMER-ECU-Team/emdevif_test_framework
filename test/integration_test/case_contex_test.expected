@@ -1,0 +1,31 @@
+* Running suit "CaseContextTest" ....F
+Test suit "CaseContextTest" expect "==": Case "A" failed at __FILE__:__LINE__:
+lhs: 214.623
+    214.623000
+rhs: -14.37
+    -14.370000
+F
+Test suit "CaseContextTest" expect "==": Case "A" failed at __FILE__:__LINE__:
+lhs: 256
+    256 (0x100)
+rhs: -14718
+    -14718 (0xffffc682)
+expect fail.
+.....F
+Test suit "CaseContextTest" expect "==": Case "B" failed at __FILE__:__LINE__:
+lhs: 214.623
+    214.623000
+rhs: -14.37
+    -14.370000
+F
+Test suit "CaseContextTest" expect "==": Case "B" failed at __FILE__:__LINE__:
+lhs: 256
+    256 (0x100)
+rhs: -14718
+    -14718 (0xffffc682)
+expect fail.
+.
+
+Test Finished.
+
+    1 Test suit(s) finished: 0 Succeeded, 1 Failed.

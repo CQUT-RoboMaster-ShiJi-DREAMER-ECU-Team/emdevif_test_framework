@@ -23,7 +23,10 @@ static void my_printf(const char* format, ...)
     va_end(args);
 }
 
-TEST_SUIT(NoCaseTest) {}
+TEST_SUIT(NoCaseTest)
+{
+    (void)emdevif___suit;
+}
 
 static void testEntry(void)
 {
