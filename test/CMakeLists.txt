@@ -4,6 +4,10 @@ project(emdevif_test_framework_test)
 
 set(EMDEVIF_TEST_FRAMEWORK_TEST_NAME "" CACHE STRING "Select which test to run.")
 
+if (MSVC)
+    target_compile_definitions(emdevif_test_framework PUBLIC _CRT_SECURE_NO_WARNINGS)
+endif ()
+
 if (NOT (EMDEVIF_TEST_FRAMEWORK_TEST_NAME STREQUAL ""))
     if (EMDEVIF_TEST_FRAMEWORK_TEST_NAME STREQUAL "integration_test")
         add_subdirectory(integration_test)

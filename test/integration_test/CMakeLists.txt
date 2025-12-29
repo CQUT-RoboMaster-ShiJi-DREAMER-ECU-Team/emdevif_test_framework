@@ -3,13 +3,14 @@ cmake_minimum_required(VERSION 3.28)
 project(integration_test C)
 
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 11)
 
 find_package(Python3 REQUIRED)
 
 if (MSVC)
     target_compile_options(emdevif_test_framework PUBLIC /W4 /source-charset:utf-8)
 else ()
-    target_compile_options(emdevif_test_framework PUBLIC -Wpedantic)
+    target_compile_options(emdevif_test_framework PUBLIC -Wall -Wextra -Wpedantic)
 endif ()
 
 add_subdirectory(test_func_impl)
@@ -27,7 +28,7 @@ function(runTest test_name)
     add_test(NAME ${test_name}_cmp COMMAND
         ${CMAKE_COMMAND}
         -E
-        compare_files
+        compare_files --ignore-eol
         ${test_name}.out
         ${CMAKE_CURRENT_LIST_DIR}/${test_name}.expected
     )
@@ -41,3 +42,4 @@ runTest(assert_test)
 runTest(no_suit_test)
 runTest(no_case_test)
 runTest(cpp_test)
+runTest(case_contex_test)
