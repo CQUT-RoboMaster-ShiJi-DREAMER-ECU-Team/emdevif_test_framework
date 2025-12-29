@@ -1,5 +1,5 @@
 * Running suit "AllApiUsageTest" ....................................................................................
-* Running suit "TestCaseContextTest" ....F
+* Running suit "TestCaseContextTest" ......F
 Test suit "TestCaseContextTest" expect "==": Case "A" failed at __FILE__:__LINE__:
 lhs: 214.623
     214.623000
@@ -12,7 +12,13 @@ lhs: 256
 rhs: -14718
     -14718 (0xffffc682)
 expect fail.
-.....F
+F
+Test suit "TestCaseContextTest" expect "true": Case "A" failed at __FILE__:__LINE__:
+lhs: expected
+    false
+rhs: true
+    true
+.......F
 Test suit "TestCaseContextTest" expect "==": Case "B" failed at __FILE__:__LINE__:
 lhs: 214.623
     214.623000
@@ -25,6 +31,12 @@ lhs: 256
 rhs: -14718
     -14718 (0xffffc682)
 expect fail.
+F
+Test suit "TestCaseContextTest" expect "true": Case "B" failed at __FILE__:__LINE__:
+lhs: expected
+    false
+rhs: true
+    true
 .
 
 Test Finished.

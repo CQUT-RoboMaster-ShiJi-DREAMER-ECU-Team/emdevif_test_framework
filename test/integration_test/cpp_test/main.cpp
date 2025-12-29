@@ -162,9 +162,12 @@ TEST_SUIT(TestCaseContextTest)
             INT_EXPECT_EQ(114, 114);
             INT_EXPECT_EQ(514, 514);
             INT_EXPECT_GE(1919, 810);
+            EXPECT_TRUE(true);
+            EXPECT_STREQ("dfesag", "dfesag");
 
             FP_EXPECT_EQ(214.623, -14.37);
             INT_EXPECT_EQ(256, -14718)->MESSAGE("expect fail.");
+            EXPECT_FALSE(true);
         }
         RUN_TEST_CASE_WITHIN_CONTEX_END();
     };

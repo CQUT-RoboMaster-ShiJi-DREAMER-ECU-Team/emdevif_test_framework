@@ -10,7 +10,7 @@
 #include "emdevif_test_framework/core.h"
 
 #define EMDEVIF_TEST_EXPECT_TRUE(result)                                            \
-    (emdevif_current_test_compare_message_.test_suit = emdevif___suit,              \
+    (emdevif_current_test_compare_message_.test_suit = &emdevif_current_test_suit_, \
      emdevif_current_test_compare_message_.file = __FILE__,                         \
      emdevif_current_test_compare_message_.line = __LINE__,                         \
      emdevif_current_test_compare_message_.current_case_name = emdevif___case_name, \
@@ -18,7 +18,7 @@
      emdevif_test_checkTure(&emdevif_current_test_compare_message_, EMDEVIF_TEST_CHECK_TYPE_EXPECT, result))
 
 #define EMDEVIF_TEST_EXPECT_FALSE(result)                                           \
-    (emdevif_current_test_compare_message_.test_suit = emdevif___suit,              \
+    (emdevif_current_test_compare_message_.test_suit = &emdevif_current_test_suit_, \
      emdevif_current_test_compare_message_.file = __FILE__,                         \
      emdevif_current_test_compare_message_.line = __LINE__,                         \
      emdevif_current_test_compare_message_.current_case_name = emdevif___case_name, \
@@ -27,7 +27,7 @@
 
 #define EMDEVIF_TEST_ASSERT_TRUE(result, format, ...)                                                           \
     do {                                                                                                        \
-        emdevif_current_test_compare_message_.test_suit = emdevif___suit;                                       \
+        emdevif_current_test_compare_message_.test_suit = &emdevif_current_test_suit_;                          \
         emdevif_current_test_compare_message_.file = __FILE__;                                                  \
         emdevif_current_test_compare_message_.line = __LINE__;                                                  \
         emdevif_current_test_compare_message_.current_case_name = emdevif___case_name;                          \
@@ -42,7 +42,7 @@
 
 #define EMDEVIF_TEST_ASSERT_FALSE(result, format, ...)                                                           \
     do {                                                                                                         \
-        emdevif_current_test_compare_message_.test_suit = emdevif___suit;                                        \
+        emdevif_current_test_compare_message_.test_suit = &emdevif_current_test_suit_;                           \
         emdevif_current_test_compare_message_.file = __FILE__;                                                   \
         emdevif_current_test_compare_message_.line = __LINE__;                                                   \
         emdevif_current_test_compare_message_.current_case_name = emdevif___case_name;                           \

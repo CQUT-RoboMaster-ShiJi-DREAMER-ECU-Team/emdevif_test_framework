@@ -299,7 +299,7 @@ void emdevif_test_run_test_suit(emdevif_test_TestSuit* test_suit);
 /**
  * 如果要在 C++ lambda 表达式中运行测试，需要在捕获列表中传入这个宏
  */
-#define EMDEVIF_TEST_LAMBDA_CAPTURE &emdevif___case_name, &emdevif___suit
+#define EMDEVIF_TEST_LAMBDA_CAPTURE &emdevif___case_name
 
 #endif
 
