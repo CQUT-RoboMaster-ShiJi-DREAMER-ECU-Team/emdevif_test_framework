@@ -55,11 +55,16 @@ def width_of_num(src: str) -> int:
     return _i
 
 
-FILE_NAME_EXTENSION: str = ".c:"
+FILE_NAME_EXTENSIONS: list[str] = [".c:", ".cpp:"]
 
 # 逐行检测并替换文件名与行号
 for i in range(0, len(file_lines)):
-    extension_index: int = file_lines[i].find(FILE_NAME_EXTENSION)
+    extension_index: int = file_lines[i].find(FILE_NAME_EXTENSIONS[0])
+    is_cpp: bool = False
+
+    if extension_index == -1:
+        extension_index = file_lines[i].find(FILE_NAME_EXTENSIONS[1])
+        is_cpp = True
 
     if extension_index == -1:
         continue
@@ -70,7 +75,10 @@ for i in range(0, len(file_lines)):
         begin_index -= 1
     begin_index += 1
 
-    extension_index += len(FILE_NAME_EXTENSION) - 1
+    if is_cpp:
+        extension_index += len(FILE_NAME_EXTENSIONS[1]) - 1
+    else:
+        extension_index += len(FILE_NAME_EXTENSIONS[0]) - 1
 
     assert file_lines[i][extension_index] == ":"
     assert file_lines[i][begin_index - 1] == " "
