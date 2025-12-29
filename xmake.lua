@@ -5,7 +5,3 @@ target("emdevif_test_framework", function ()
     add_files("src/*.c")
     add_includedirs("inc/", {public = true})
 end)
-
-option("EMDEVIF_TEST_FRAMEWORK_ENABLE_TEST", {default = false, description = "Enabled it to enable test"})
-
-includes("test")

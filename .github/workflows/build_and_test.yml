@@ -15,9 +15,7 @@ jobs:
       - name: Setup deps
         run: |
           sudo apt-get update
-          sudo apt-get install build-essential cmake xmake
-          xmake update
-          source ~/.bashrc
+          sudo apt-get install build-essential cmake
 
       - name: CMake config
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DEMDEVIF_TEST_FRAMEWORK_ENABLE_TEST=ON -DEMDEVIF_TEST_FRAMEWORK_TEST_NAME="integration_test" --debug-output
@@ -25,16 +23,6 @@ jobs:
         run: cmake --build build --verbose
       - name: ctest
         run: cd build && ctest . --verbose
-
-      - name: clean
-        run: rm -r build
-
-      - name: XMake config
-        run: xmake f -m release --EMDEVIF_TEST_FRAMEWORK_ENABLE_TEST=true --EMDEVIF_TEST_FRAMEWORK_TEST_NAME="integration_test" --verbose
-      - name: XMake build
-        run: xmake --build --verbose emdevif_test_framework_test
-      - name: XMake run test
-        run: xmake run emdevif_test_framework_test
 
   on-windows:
     runs-on: windows-latest
